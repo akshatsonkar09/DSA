@@ -1,2 +1,4 @@
 If any kind of search works for a smal range and then doesnt work further then we can always apply binary search
 You can turn to binary search whenever ther is something like minimun integer
+While writing if statement you can simply use c >'a' amd c < 'z' C++ doesnt mind just put both small and capital letters
+For any stack first check empty condititon and then case condition  [st.empty() && st.top() != '(' CORRECT)] [st.top() != '(' || st.empty() WRONG)]
