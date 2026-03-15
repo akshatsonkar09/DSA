@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "ConversionExercise.C": "cpp",
+        "stdio.h": "c",
+        "limits": "c"
+    },
+    "editor.mouseWheelZoom": true
+
+    
+}
