@@ -3,3 +3,5 @@ You can turn to binary search whenever ther is something like minimun integer
 While writing if statement you can simply use c >'a' amd c < 'z' C++ doesnt mind just put both small and capital letters
 For any stack first check empty condititon and then case condition  [st.empty() && st.top() != '(' CORRECT)] [st.top() != '(' || st.empty() WRONG)]
 During interviews first go from brute then better then optimal approach.
+In trees for recursive traversal just do the O L R method for preorder-> ans.pushback(root->val) L R/ for inorder-> L in R/ for postorder-> L R post
+In trees for iterative traversal just 

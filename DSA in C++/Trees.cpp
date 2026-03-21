@@ -14,19 +14,14 @@ struct Node {
     }
 };
 
-void PreorderTreeTraversalRecursive/*Root Left Right*/ (Node* root) {
-    if(root == NULL) return;
-    cout << root->data << " ";
-    PreorderTreeTraversalRecursive(root->left);
-    PreorderTreeTraversalRecursive(root->right);
-}
 
 //Explain by chat gpt and tell time complexity
 
+//Preorder me root left right hota hai lekin stack se banane ke liye ulta karna karna padega isliye root right left hai
 vector <int> PreorderTreeTraversalIterative(Node* root) {
     vector <int> preorder;
     if (root == NULL) return preorder;
-
+    
     stack <Node*> st;
     st.push(root);
     while (!st.empty())
@@ -59,47 +54,54 @@ vector <int> InorderTreeTraversalIterative(Node* root) {
     return inorder;
 }
 
+//Postorder me left right root hota hai lekin stack se banane ke liye ulta karna karna padega isliye left right root hai
 vector<int> PostorderTreeTraversalIterative(Node* root) {
-        vector<int> postorder;
-        if (root == NULL) return postorder;
-
-        stack<Node*> st1, st2;
-        st1.push(root);
-
-        while (!st1.empty()) {
-            Node* node = st1.top();
-            st1.pop();
-            st2.push(node);
-
-            if (node->left != NULL)
-                st1.push(node->left);
-
-            if (node->right != NULL)
-                st1.push(node->right);
-        }
-
-        while (!st2.empty()) {
-            postorder.push_back(st2.top()->data);
+    vector<int> postorder;
+    if (root == NULL) return postorder;
+    
+    stack<Node*> st1, st2;
+    st1.push(root);
+    
+    while (!st1.empty()) {
+        Node* node = st1.top();
+        st1.pop();
+        st2.push(node);
+        
+        if (node->left != NULL)
+        st1.push(node->left);
+        
+        if (node->right != NULL)
+        st1.push(node->right);
+    }
+    
+    while (!st2.empty()) {
+        postorder.push_back(st2.top()->data);
             st2.pop();
         }
-
         return postorder;
     }
+    
+    
+    void PreorderTreeTraversalRecursive/*Root Left Right*/ (Node* root) {
+        if(root == NULL) return;
+        cout << root->data << " ";
+        PreorderTreeTraversalRecursive(root->left);
+        PreorderTreeTraversalRecursive(root->right);
+    }
 
+    void InorderTreeTraversalRecursive(Node* root)/*Left Root Right*/ {
+        if(root == NULL) return;
+        InorderTreeTraversalRecursive(root->left);
+        cout << root->data << " ";
+        InorderTreeTraversalRecursive(root->right);
+    }
 
-void InorderTreeTraversalRecursive(Node* root)/*Left Root Right*/ {
-    if(root == NULL) return;
-    InorderTreeTraversalRecursive(root->left);
-    cout << root->data << " ";
-    InorderTreeTraversalRecursive(root->right);
-}
-
-void PostorderTreeTraversalRecursive/*Left Right Root*/ (Node* root) {
-    if(root == NULL) return ;
-    PostorderTreeTraversalRecursive(root->left);
-    PostorderTreeTraversalRecursive(root->right);
-    cout << root->data << " ";
-}
+    void PostorderTreeTraversalRecursive/*Left Right Root*/ (Node* root) {
+        if(root == NULL) return ;
+        PostorderTreeTraversalRecursive(root->left);
+        PostorderTreeTraversalRecursive(root->right);
+        cout << root->data << " ";
+    }
 
 Node* SearchinBST(Node* root,int val){
     while (root != NULL && root->data != val ) //while (root->data != val && root != NULL) is wrong because you are dereferencing root before checking if it is NULL. That is undefined behavior and will crash.
