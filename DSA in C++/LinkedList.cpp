@@ -7,7 +7,7 @@ using namespace std;
 class Node // You can use struct Node as well but c++ gives us better ways like class
 {
 public:
-//data ko define karte hai and then uska ek struct form ka deconstructor bana dete hai
+    // data ko define karte hai and then uska ek struct form ka deconstructor bana dete hai
     int data;
     Node *next;
 
@@ -85,8 +85,10 @@ Node *deleteHead(Node *head)
 
 Node *deleteTail(Node *head)
 {
-    if (head == NULL /*Empty LL*/) return NULL;
-    if(head->next /*Singly LL*/ == NULL) {
+    if (head == NULL /*Empty LL*/)
+        return NULL;
+    if (head->next /*Singly LL*/ == NULL)
+    {
         delete head;
         return NULL;
     }
@@ -100,54 +102,58 @@ Node *deleteTail(Node *head)
     return head;
 }
 
-//This is Strivers
-// Node *deleteatIndex(Node *head, int k)
-// { 
-//     if (head == NULL)//for empty
-//         return head;
-//     if (k == 1)     //for head
-//     { // this is done to make the value at second index the new head otherwise we would lose head
-//         // Node *temp = head;
-//         // head = head->next;
-//         // delete temp;
-//         // return head;
-//         return deleteHead(head);
-//     }
-//     int cnt = 1;    //Why 1 and not 0(Reason because we have temp = head)
-//     Node *temp = head;
-//     Node *prev = NULL;
-//     while (temp != NULL)
-//     {
-//         cnt++;
-//         if (cnt == k)
-//         {
-//             prev->next = prev->next->next;
-//             delete temp;
-//             break;
-//         }
-//         prev = temp; // left value right par jaati hai isliye prev phir null se index 1 then due to next line temp at index 2 and again prev = temp se prev at index 2 and temp at index 3
-//         temp = temp->next;
-//     }
-//     return head;
-// }
+// This is Strivers
+//  Node *deleteatIndex(Node *head, int k)
+//  {
+//      if (head == NULL)//for empty
+//          return head;
+//      if (k == 1)     //for head
+//      { // this is done to make the value at second index the new head otherwise we would lose head
+//          // Node *temp = head;
+//          // head = head->next;
+//          // delete temp;
+//          // return head;
+//          return deleteHead(head);
+//      }
+//      int cnt = 1;    //Why 1 and not 0(Reason because we have temp = head)
+//      Node *temp = head;
+//      Node *prev = NULL;
+//      while (temp != NULL)
+//      {
+//          cnt++;
+//          if (cnt == k)
+//          {
+//              prev->next = prev->next->next;
+//              delete temp;
+//              break;
+//          }
+//          prev = temp; // left value right par jaati hai isliye prev phir null se index 1 then due to next line temp at index 2 and again prev = temp se prev at index 2 and temp at index 3
+//          temp = temp->next;
+//      }
+//      return head;
+//  }
 
-//GPT CODE
-Node* deleteatindex(Node* head, int k) {
-    Node* temp = head;
-    Node* prev = nullptr;
-    if(head == NULL) return head;
-    if (k==1) return deleteHead(head);
-    
+// GPT CODE
+Node *deleteatindex(Node *head, int k)
+{
+    Node *temp = head;
+    Node *prev = nullptr;
+    if (head == NULL)
+        return head;
+    if (k == 1)
+        return deleteHead(head);
+
     int cnt = 1;
 
-    while (temp!=NULL && cnt<k)
+    while (temp != NULL && cnt < k)
     {
         prev = temp;
-        temp=temp->next;
+        temp = temp->next;
         cnt++;
     }
 
-    if(temp==NULL) return head; //Critical failsafe
+    if (temp == NULL)
+        return head; // Critical failsafe
 
     prev->next = temp->next;
     temp->next = nullptr;
@@ -268,25 +274,30 @@ Node *insertbeforevalue(Node *head, int val, int insertval)
     return head;
 }
 
-Node* ReverseLL(Node* head) {
-    if(head == NULL || head->next == NULL) return head;
+Node *ReverseLL(Node *head)
+{
+    if (head == NULL || head->next == NULL)
+        return head;
 
-    Node* temp= head;
-    Node* front = head->next;
-    Node* prev = nullptr;
+    Node *temp = head;
+    Node *front = head->next;
+    Node *prev = nullptr;
 
-    while (temp!=NULL)
+    while (temp != NULL)
     {
         front = temp->next;
         temp->next = prev;
         prev = temp;
-        temp=front;
+        temp = front;
     }
     return prev;
 }
 
-Node* MidofLL(Node* head) {
-    if(head == NULL || head->next == NULL) return head;
+// Tortoise & hare Method
+Node *MidofLL(Node *head)
+{
+    if (head == NULL || head->next == NULL)
+        return head;
 
     Node *slow = head, *fast = head;
     while (fast != NULL && fast->next != NULL)
@@ -297,77 +308,97 @@ Node* MidofLL(Node* head) {
     return slow;
 }
 
+bool FloydLoopDetection(Node *head)
+{
+    if (head == NULL)
+        return false;
+
+    Node *slow = head;
+    Node *fast = head;
+
+    while (fast != NULL && fast->next != NULL)
+    {
+        slow = slow->next;
+        fast = fast->next->next;
+
+        if (slow == fast)
+            return true;
+    }
+    return false;
+}
+// Floyd as a rabbit monster with F on his head first ask if you have h taken head = NULL condition if not he screams in anime style to go away/false.Then He asks you to take two pointers/two man race. Then he tells you to race him until he drops ie your while condition. You two start racing and he drops when you both collide
+
 int main()
 {
     vector<int> Arr = {2, 5, 8, 7};
     Node *y = new Node(Arr[0], nullptr);
     cout << y->data << endl; // IMPORTANT -> There are various ways to write it so see it carefully
-    cout<<endl;
-    
+    cout << endl;
+
     vector<int> arr = {2, 5, 8, 7};
     Node *head = convertArr2LL(arr);
     cout << head->data << endl;
-    cout<<endl;
-    
+    cout << endl;
+
     printll(head);
     head = deleteHead(head);
     printll(head);
-    cout<<endl;
-    
+    cout << endl;
+
     arr = {2, 5, 8, 7};
     head = convertArr2LL(arr);
     printll(head);
     head = deleteTail(head);
     printll(head);
-    cout<<endl;
-    
+    cout << endl;
+
     arr = {2, 5, 8, 7};
     head = convertArr2LL(arr);
     printll(head);
     head = deleteatindex(head, 2);
     printll(head);
-    cout<<endl;
-    
+    cout << endl;
+
     arr = {2, 5, 8, 7};
     head = convertArr2LL(arr);
     printll(head);
     head = deleteatvalue(head, 8);
     printll(head);
-    cout<<endl;
-    
+    cout << endl;
+
     arr = {2, 5, 8, 7};
     head = convertArr2LL(arr);
     printll(head);
     head = insertatHead(head, 1);
     printll(head);
-    cout<<endl;
-    
+    cout << endl;
+
     arr = {2, 5, 8, 7};
     head = convertArr2LL(arr);
     printll(head);
     head = insertatLast(head, 10);
     printll(head);
-    cout<<endl;
-    
+    cout << endl;
+
     arr = {2, 5, 8, 7};
     head = convertArr2LL(arr);
     printll(head);
     head = insertatindex(head, 3, 9);
     printll(head);
-    cout<<endl;
-    
+    cout << endl;
+
     arr = {2, 5, 8, 7};
     head = convertArr2LL(arr);
     printll(head);
     head = insertbeforevalue(head, 3, 9);
     printll(head);
-    cout<<endl;
+    cout << endl;
 
     arr = {2, 5, 8, 7};
     head = convertArr2LL(arr);
     printll(head);
     head = MidofLL(head);
-    cout<< head->data << endl;
+    cout << head->data << endl;
 
     return 0;
 }
