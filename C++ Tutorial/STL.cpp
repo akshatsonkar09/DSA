@@ -369,6 +369,7 @@ st1.swap(st2);
 
         cout<< endl << endl;
 
+        //In max heap the parent wil always be greater than its children while in min heap the parent will always be lesser then its children
 
         /******PRIORITY QUEUE END******/
 

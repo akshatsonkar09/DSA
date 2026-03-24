@@ -285,14 +285,14 @@ Node *ReverseLL(Node *head)
 
     while (temp != NULL)
     {
-        front = temp->next;     
+        front = temp->next;
         temp->next = prev;
         prev = temp;
         temp = front;
     }
     return prev;
 }
-//Temp aur prev ko assign karo aur loop me temp bolega front ko aage aane ke liye fir temp ne prev par apni  arrow tail daal di aur prev temp ke paas aa kar mar gaya aur temp chala gaya front ke paas
+// Temp aur prev ko assign karo aur loop me temp bolega front ko aage aane ke liye fir temp ne prev par apni  arrow tail daal di aur prev temp ke paas aa kar mar gaya aur temp chala gaya front ke paas
 
 // Tortoise & hare Method
 Node *MidofLL(Node *head)
@@ -329,42 +329,50 @@ bool FloydLoopDetection(Node *head)
 }
 // Floyd as a rabbit monster with F on his head first ask if you have h taken head = NULL condition if not he screams in anime style to go away/false.Then He asks you to take two pointers/two man race. Then he tells you to race him until he drops ie your while condition. You two start racing and he drops when you both collide
 
-bool isPalindrome(Node* head) {
-        if(head == NULL || head->next == NULL) return true;
-
-        //Reaching mid point(m1)
-        Node *slow = head;
-        Node *fast = head;
-
-        while(fast->next && fast->next->next) {
-            slow = slow->next;
-            fast = fast->next->next;
-        }
-
-        //Reversing the half
-        Node *prev = nullptr;
-        Node *temp = slow->next;
-        Node* front;
-        while(temp) {
-            front = temp->next;
-            temp->next = prev;
-            prev = temp;
-            temp = front;
-        }
-        slow->next = nullptr;
-
-        //Making heads and checking
-        Node* newHead = prev;   //prev is pointing towards last node 
-        Node *first = head;
-        Node *second = newHead;
-
-        while(second) {
-            if(first->data != second->data) return false;
-            first = first->next;
-            second = second->next;
-        }
+bool isPalindrome(Node *head)
+{
+    if (head == NULL || head->next == NULL)
         return true;
+
+    // Reaching mid point(m1)
+    Node *slow = head;
+    Node *fast = head;
+
+    while (fast->next && fast->next->next)
+    {
+        slow = slow->next;
+        fast = fast->next->next;
     }
+
+    // Reversing the half
+    Node *prev = nullptr;
+    Node *temp = slow->next;
+    Node *front;
+    while (temp)
+    {
+        front = temp->next;
+        temp->next = prev;
+        prev = temp;
+        temp = front;
+    }
+    slow->next = nullptr;
+
+    // Making heads and checking
+    Node *newHead = prev; // prev is pointing towards last node
+    Node *first = head;
+    Node *second = newHead;
+
+    while (second)
+    {
+        if (first->data != second->data)
+            return false;
+        first = first->next;
+        second = second->next;
+    }
+    return true;
+}
+
+
 
 int main()
 {
@@ -437,6 +445,7 @@ int main()
     printll(head);
     head = MidofLL(head);
     cout << head->data << endl;
+    cout << endl;
 
     return 0;
 }
