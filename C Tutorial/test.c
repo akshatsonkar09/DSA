@@ -1,69 +1,68 @@
 #include <stdio.h>
-#include <stdlib.h>
 
-struct Node{
-    int data;
-    struct Node* next;
-};
+#define MAX 10
 
-struct Node* front=NULL;
-struct Node* rear=NULL;
+int queue[MAX];
+int front = -1, rear = -1;
 
-void insert(int x){
-
-    struct Node* n=malloc(sizeof(struct Node));
-    n->data=x;
-    n->next=NULL;
-
-    if(rear==NULL){
-        front=rear=n;
+void enqueue(int x){
+    if(rear == MAX-1){
+        printf("Overflow\n");
         return;
     }
 
-    rear->next=n;
-    rear=n;
+    if(front == -1)
+        front = 0;
+
+    queue[++rear] = x;
 }
 
-void delete(){
-
-    if(front==NULL){
-        printf("Queue Empty\n");
+void dequeue(){
+    if(front == -1 || front > rear){
+        printf("Underflow\n");
         return;
     }
-
-    struct Node* t=front;
-    front=front->next;
-
-    if(front==NULL)
-        rear=NULL;
-
-    free(t);
+    front++;
 }
 
 void display(){
+    for(int i=front;i<=rear;i++)
+        printf("%d ",queue[i]);
+    printf("\n");
+}
 
-    struct Node* t=front;
-
-    while(t!=NULL){
-        printf("%d ",t->data);
-        t=t->next;
+void deleteNth(int n){
+    if(front == -1 || n > (rear-front+1)){
+        printf("Error: Invalid position\n");
+        return;
     }
 
-    printf("\n");
+    for(int i=1;i<n;i++){
+        enqueue(queue[front]);
+        dequeue();
+    }
+
+    dequeue(); // delete nth
 }
 
 int main(){
 
-    insert(10);
-    insert(20);
-    insert(30);
+    enqueue(1);
+    enqueue(2);
+    enqueue(3);
+    enqueue(4);
+    enqueue(5);
 
-    printf("Queue:\n");
+    printf("Queue elements are: ");
     display();
 
-    delete();
+    printf("Delete 7th element:\n");
+    deleteNth(7);
 
-    printf("After deletion:\n");
+    printf("Delete 3rd element:\n");
+    deleteNth(3);
+
+    printf("Queue elements are: ");
     display();
 
     return 0;
