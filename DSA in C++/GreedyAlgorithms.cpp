@@ -75,6 +75,29 @@ int N_Meetings_in_one_room(int start[], int end[], int N)
     //some may ask you to return position array;
 }
 
+double Fractional_Knapsack (vector<pair<int,int>> nums, int weight) {
+    //vector -> [(100,20), (60,10), (100,50), (200,50)]
+
+    bool comparator(const pair<int,int> &a, const pair<int,int> &b) {
+        return (double)a.first*b.second > (double) b.first*a.second;
+    }
+    sort(nums.begin(), nums.end(), comparator);
+
+    double totalval = 0;
+
+    for (int i = 0; i < nums.size(); i++)
+    {
+        if(nums[i].second <= weight) {
+            totalval += nums[i].first;
+            weight -= nums[i].second;
+        } else {
+            totalval += (((double)nums[i].first/(double)nums[i].second)*weight);
+            break;
+        }
+    }
+    return totalval
+}
+
 int main()
 {
 

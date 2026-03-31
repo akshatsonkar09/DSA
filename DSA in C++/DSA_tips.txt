@@ -6,3 +6,4 @@ During interviews first go from brute then better then optimal approach.
 In trees for recursive traversal just do the O L R method for preorder-> ans.pushback(root->val) L R/ for inorder-> L in R/ for postorder-> L R post
 In trees for iterative traversal just 
 In Linked List Tortoise and hare method makes my time complexity N/2
+In array you can use reverse,swap functions
