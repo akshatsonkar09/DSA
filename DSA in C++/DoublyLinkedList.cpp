@@ -311,7 +311,27 @@ Node* ReverseDLL (Node* head) {
         current->next = prev;
     }
     return prev->back;
-    
+}
+
+Node* deletealloccurance(Node *head, int key) {
+        Node *temp = head;
+
+        while (temp)
+        {
+            if (temp->data == key)
+            {
+                if(temp == head) head = head->next;
+                Node *nextNode = temp->next;
+                Node *prevNode = temp->back;
+
+                if(nextNode) nextNode->back = prevNode;
+                if(prevNode) prevNode->next = nextNode;
+                free(temp);
+                temp = nextNode;
+            }
+            else temp = temp->next;
+            
+        }   
 }
 
 int main()

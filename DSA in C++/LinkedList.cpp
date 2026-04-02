@@ -295,6 +295,8 @@ Node *ReverseLL(Node *head)
 // Temp aur prev ko assign karo aur loop me temp bolega front ko aage aane ke liye fir temp ne prev par apni  arrow tail daal di aur prev temp ke paas aa kar mar gaya aur temp chala gaya front ke paas
 
 // Tortoise & hare Method
+//For m1 use fast->next != NULL && fast->next->next != NULL
+//For m2 use fast != NULL && fast->next != NULL
 Node *MidofLL(Node *head)
 {
     if (head == NULL || head->next == NULL)

@@ -1,35 +1,77 @@
-#include <iostream>
-#include <bits/stdc++.h>
 
-using namespace std;
-
-int lengthOfLongestSubstring(string s)
+struct ListNode
 {
-    int hash[256];
-    for (int i = 0; i < 256; i++)
+    int val;
+    ListNode *next;
+    ListNode() : val(0), next(nullptr) {}
+    ListNode(int x) : val(x), next(nullptr) {}
+    ListNode(int x, ListNode *next) : val(x), next(next) {}
+};
+
+class Solution
+{
+public:
+    ListNode *findmiddle(ListNode *head)
     {
-        hash[i] = -1;
-    }
-    
-    int longest;
-    int left = 0, right = 0;
-    while (right < s.length())
-    {
-        if (hash[s[right]] != -1)
+        ListNode *slow = head;
+        ListNode *fast = head->next->next;
+
+        while (fast && fast->next)
         {
-            left = max(hash[s[right]]+1,left);
+            slow = slow->next;
+            fast = fast->next->next;
         }
-        int length = right-left+1;
-        
-        longest = max(length,longest);
-        hash[s[right]] = right;
-        right++;
+        return slow;
     }
-    return longest; 
-}
 
-int main()
-{
+    ListNode *merge(ListNode *ptr1, ListNode *ptr2)
+    {
+        ListNode *dummyNode = new ListNode(-1);
+        ListNode *temp = dummyNode;
+        while (ptr1 && ptr2)
+        {
+            if (ptr1->val < ptr2->val)
+            {
+                temp->next = ptr1;
+                temp = ptr1;
+                ptr1 = ptr1->next;
+            }
 
-    return 0;
-}
+            else
+            {
+                temp->next = ptr2;
+                temp = ptr2;
+                ptr2 = ptr2->next;
+            }
+        }
+
+        while (ptr1)
+        {
+            temp->next = ptr1;
+            temp = ptr1;
+            ptr1 = ptr1->next;
+        }
+        while (ptr2)
+        {
+            temp->next = ptr2;
+            temp = ptr2;
+            ptr2 = ptr2->next;
+        }
+        return dummyNode->next;
+    }
+
+    ListNode *sortList(ListNode *head)
+    {
+        if (head == nullptr || head->next == nullptr)
+            return head;
+
+        ListNode *middle = findmiddle(head);
+        ListNode *lefthead = head;
+        ListNode *righthead = middle->next;
+        middle->next = nullptr;
+
+        lefthead = sortList(lefthead);
+        righthead = sortList(righthead);
+        return merge(lefthead, righthead);
+    }
+};

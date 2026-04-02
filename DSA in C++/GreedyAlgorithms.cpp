@@ -78,10 +78,10 @@ int N_Meetings_in_one_room(int start[], int end[], int N)
 double Fractional_Knapsack (vector<pair<int,int>> nums, int weight) {
     //vector -> [(100,20), (60,10), (100,50), (200,50)]
 
-    bool comparator(const pair<int,int> &a, const pair<int,int> &b) {
-        return (double)a.first*b.second > (double) b.first*a.second;
-    }
-    sort(nums.begin(), nums.end(), comparator);
+
+    sort(nums.begin(), nums.end(), [](const pair<int,int> &a, const pair<int,int> &b) {
+        return (double)a.first / a.second > (double)b.first / b.second;
+    });
 
     double totalval = 0;
 
@@ -95,7 +95,7 @@ double Fractional_Knapsack (vector<pair<int,int>> nums, int weight) {
             break;
         }
     }
-    return totalval
+    return totalval;
 }
 
 int main()

@@ -112,6 +112,26 @@ Node* SearchinBST(Node* root,int val){
     return root;  
 }
 
+int floorinBST (Node *root, int key) {
+    int floor = -1;
+    if (root->data == key)
+    {
+        floor = root->data;
+        return floor;
+    }
+
+    if (root->data < key)
+    {
+        floor = root->data;
+        root = root->right;
+    }
+    else
+    {
+        root = root->left;
+    }
+    return floor;
+}
+
 
 int main() {
 
