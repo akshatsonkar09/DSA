@@ -1,3 +1,7 @@
+#include <iostream>
+#include <bits/stdc++.h>
+
+using namespace std;
 
 struct ListNode
 {
@@ -11,67 +15,50 @@ struct ListNode
 class Solution
 {
 public:
-    ListNode *findmiddle(ListNode *head)
+    ListNode *addTwoNumbers(ListNode *l1, ListNode *l2)
     {
-        ListNode *slow = head;
-        ListNode *fast = head->next->next;
-
-        while (fast && fast->next)
-        {
-            slow = slow->next;
-            fast = fast->next->next;
-        }
-        return slow;
-    }
-
-    ListNode *merge(ListNode *ptr1, ListNode *ptr2)
-    {
+        int carry = 0;
+        ListNode *ptr1 = l1, *ptr2 = l2;
         ListNode *dummyNode = new ListNode(-1);
         ListNode *temp = dummyNode;
+
         while (ptr1 && ptr2)
         {
-            if (ptr1->val < ptr2->val)
+            if (ptr1->val + ptr2->val + carry >= 10)
             {
-                temp->next = ptr1;
-                temp = ptr1;
-                ptr1 = ptr1->next;
+                ListNode *newNode = new ListNode(ptr1->val + ptr2->val - 10 + carry);
+                carry = 1;
+                temp->next = newNode;
+                temp = newNode;
             }
-
             else
             {
-                temp->next = ptr2;
-                temp = ptr2;
-                ptr2 = ptr2->next;
+                ListNode *newNode = new ListNode(ptr1->val + ptr2->val + carry);
+                carry = 0;
+                temp->next = newNode;
+                temp = newNode;
             }
+            ptr1 = ptr1->next;
+            ptr2 = ptr2->next;
         }
-
         while (ptr1)
         {
-            temp->next = ptr1;
-            temp = ptr1;
+            ListNode *newNode = new ListNode(ptr1->val + carry);
+            carry = 0;
+            if (newNode->val >= 10) carry = 1;
+            temp->next = newNode;
+            temp = newNode;
             ptr1 = ptr1->next;
         }
         while (ptr2)
         {
-            temp->next = ptr2;
-            temp = ptr2;
+            ListNode *newNode = new ListNode(ptr2->val + carry);
+            carry = 0;
+            if (newNode->val >= 10) carry = 1;
+            temp->next = newNode;
+            temp = newNode;
             ptr2 = ptr2->next;
         }
         return dummyNode->next;
-    }
-
-    ListNode *sortList(ListNode *head)
-    {
-        if (head == nullptr || head->next == nullptr)
-            return head;
-
-        ListNode *middle = findmiddle(head);
-        ListNode *lefthead = head;
-        ListNode *righthead = middle->next;
-        middle->next = nullptr;
-
-        lefthead = sortList(lefthead);
-        righthead = sortList(righthead);
-        return merge(lefthead, righthead);
     }
 };

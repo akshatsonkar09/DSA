@@ -295,8 +295,8 @@ Node *ReverseLL(Node *head)
 // Temp aur prev ko assign karo aur loop me temp bolega front ko aage aane ke liye fir temp ne prev par apni  arrow tail daal di aur prev temp ke paas aa kar mar gaya aur temp chala gaya front ke paas
 
 // Tortoise & hare Method
-//For m1 use fast->next != NULL && fast->next->next != NULL
-//For m2 use fast != NULL && fast->next != NULL
+// For m1 use fast->next != NULL && fast->next->next != NULL
+// For m2 use fast != NULL && fast->next != NULL
 Node *MidofLL(Node *head)
 {
     if (head == NULL || head->next == NULL)
@@ -373,6 +373,66 @@ bool isPalindrome(Node *head)
     }
     return true;
 }
+
+Node *Add1tollIterative(Node *head)
+{
+    head = ReverseLL(head);
+    Node *temp = head;
+    int carry = 1;
+
+    while (temp)
+    {
+        temp->data = temp->data + carry;
+
+        if (temp->data < 10)
+        {
+            carry = 0;
+            break;
+        } else {
+            temp->data = 0;
+            carry = 1;
+        }
+        temp = temp->next;
+    }
+
+    if (carry == 1)
+    {
+        Node *newNode = new Node(1);
+        head = ReverseLL(head);
+        newNode->next = head;
+        return newNode;
+    }
+    head = ReverseLL(head);
+    return head;
+}
+
+int helper (Node *head) {
+    int carry;
+    Node *temp = head;
+    if (temp)
+    {
+        return 1;
+    }
+    carry = helper(temp->next);
+    temp->data = temp->data + carry;
+
+    if(temp->data < 10) return 0;
+    temp->data = 0;
+    return 1; 
+}
+
+Node *Add1toLLRecursive (Node *head) {
+    int carry = helper(head);
+        if (carry)
+        {
+            Node *newNode = new Node(1);
+            newNode->next = head;
+            return newNode;
+        }
+        return head;
+}
+
+
 
 
 
