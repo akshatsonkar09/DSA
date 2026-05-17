@@ -4,22 +4,12 @@
 
 using namespace std;
 
-// Fails 
-// vector <int,int> MakeGraphUsingMatrix(int node, int edge)  {
-//     vector<int,int> matrix[node+1][edge+1] = {0};
-//     for (int i = 0; i < edge; i++)
-//     {
-//         int u,v;
-//         cin >> u >> v;      //(u,v) cordinates as (node,edge)
-//         matrix[u][v].push_back = 1;
-//         matrix[v][u].push_back = 1;
-//     }
-// return matrix;
-// }
-
 
 vector<vector<int>> MakeGraphUsingMatrix (int node, int edge) {
-    vector<vector<int>> matrix(node+1, vector<int>(node+1,0));        //vector<int>(nodes + 1, 0)  Creates a single row of size row+1 basically tells to use column size with every element valued 0.
+    vector<vector<int>> matrix(node+1, vector<int>(node+1,0));        
+    //vector<int>(nodes + 1, 0)  Tells us to make a vector of size node+1 and initialize all the values with 0. This is for the columns
+    //vector<vector<int>> matrix(node+1, vector<int>(node+1,0));  Tells us to make a vector of size node+1 and initialize all the values with 0. This is for the rows as well as columns because we are making a vector of vector. So we are making a 2D vector of size node+1 x node+1 and initializing all the values with 0. 
+
     //node+1 tells us the number of rows we need
 
     for (int i = 0; i < edge; i++)
@@ -31,8 +21,10 @@ vector<vector<int>> MakeGraphUsingMatrix (int node, int edge) {
     }
     return matrix;
 }
+
 //Adjacency List is better than Matrix method because of no unnecessary usage for storing 0's
-void MakeGraphUSingAdjacencyList(int node, int edge, vector<int> adj[]) {
+vector<vector<int>> MakeGraphUsingAdjacencyList(int node, int edge) {
+    vector<vector<int>> adj(node + 1);
     for (int i = 0; i < edge; i++)
     {
         int u,v;
@@ -40,6 +32,79 @@ void MakeGraphUSingAdjacencyList(int node, int edge, vector<int> adj[]) {
         adj[u].push_back(v);
         adj[v].push_back(u);    //remove for directed graph
     }
+    return adj;
+}
+
+/*
+Steps of bfs 
+S1-> In function we need a adjacency list or matrix along with number of nodes ie V
+S2-> We need a queue and 2 vector vis and bfs
+S3 -> We need to loop form 1 to V
+S4-> If visited then continue otherwise not visited then mark it as visited and push it into the queue
+S5-> Loop until queue is empty, in the loop save the front, pop it, push into bfs,
+S6-> then check for all the adjacent nodes of the popped node and if they are not visited then we will mark them as visited and push them into the queue
+*/
+
+vector<int> BreadthFirstSearchUsingMatrix(int V, vector<vector<int>> &matrix) {
+    //If V is not given then we can find it by matrix.size() because the number of rows will be equal to the number of nodes or matrix[0].size() because the number of columns will also be equal to the number of nodes
+
+    vector<int> vis(V + 1, 0);
+    queue<int> q;
+    vector<int> bfs;
+
+    for (int i = 1; i <= V; i++) {
+        if (vis[i] == 1) continue;
+
+        vis[i] = 1;
+        q.push(i);
+
+        while (!q.empty()) {
+            int node = q.front();
+            q.pop();
+            bfs.push_back(node);
+
+            for (int adjNode = 1; adjNode <= V; adjNode++) {
+                if (matrix[node][adjNode] == 1 && !vis[adjNode]) {
+                    vis[adjNode] = 1;
+                    q.push(adjNode);
+                }
+            }
+        }
+    }
+
+    return bfs;
+}
+
+
+/*Steps of DFS
+S1-> In function we need a adjacency list or matrix along with number of nodes ie V
+S2-> We need 2 vector vis and dfs
+S3 -> We need to loop form 1 to V
+S4-> If visited then leave it otherwise not visited then mark it as visited and run helper function for that node
+S5-> In helper function  mark the node as visited and push into dfs, then check all the adjacent nodes of the node and if not visited then we will mark them as visited and run helper function for those nodes as well.
+*/
+void DepthFirstSearchMatrixHelper(int node, vector<vector<int>> &matrix, int V, vector<int> &vis, vector<int> &dfs) {
+    vis[node] = 1;
+    dfs.push_back(node);
+
+    for (int adjNode = 1; adjNode <= V; adjNode++) {
+        if (matrix[node][adjNode] == 1 && !vis[adjNode]) {
+            DepthFirstSearchMatrixHelper(adjNode, matrix, V, vis, dfs);
+        }
+    }
+}
+
+vector<int> DepthFirstSearchUsingMatrix(int V, vector<vector<int>> &matrix) {
+    vector<int> vis(V + 1, 0);
+    vector<int> dfs;
+
+    for (int i = 1; i <= V; i++) {
+        if (!vis[i]) {
+            DepthFirstSearchMatrixHelper(i, matrix, V, vis, dfs);
+        }
+    }
+
+    return dfs;
 }
 /*
 Reason for edge over loop
@@ -52,11 +117,11 @@ Edges given as input:
 
 */
 
-vector<int> BreadthFirstSearch(int V, vector<int> adj[]) {
-    int vis[V] = {0};   //can use vector int as well like this -> vector<int> vis(V,0);   //VVV IMPORTANT WAY TO INITIALIZE VECTOR
-    vis[0] = 1;
+vector<int> BreadthFirstSearchUsingAdjacencyList(int V, vector<vector<int>> &adj) {
+    vector<int> vis(V + 1, 0);   //can use vector int as well like this -> vector<int> vis(V,0);   //VVV IMPORTANT WAY TO INITIALIZE VECTOR
+    vis[1] = 1;
     queue <int> q;
-    q.push(0);
+    q.push(1);
     vector<int> bfs;
 
     while (!q.empty())
@@ -73,24 +138,28 @@ vector<int> BreadthFirstSearch(int V, vector<int> adj[]) {
     }
     return bfs;
 }
-void Dfs (int node, vector<int> adj[],  vector<int> &vis, vector <int> &dfs) {
+
+
+
+void DepthFirstSearchAdjacencyListHelper (int node, vector<vector<int>> &adj, int V, vector<int> &vis, vector <int> &dfs) {
     vis[node] = 1;
     dfs.push_back(node);
     for (auto it: adj[node])
     {
        if(!vis[it]) {
-        Dfs(it,adj,vis,dfs);
+        DepthFirstSearchAdjacencyListHelper(it, adj, V, vis, dfs);
        }
     }
     
 }
-vector<int> DepthFirstSearch (int V, vector <int> adj[]) {
-    vector<int> vis (V,0);  //vector initialization baar baar galat ho raha hai
-    int start = 0;
+vector<int> DepthFirstSearchUsingAdjacencyList (int V, vector<vector<int>> &adj) {
+    vector<int> vis (V + 1,0);
+    int start = 1;
     vector<int> dfs;
-    Dfs(start,adj,vis,dfs);
+    DepthFirstSearchAdjacencyListHelper(start, adj, V, vis, dfs);
     return dfs;
 }
+
 /*MIND MAP OF HOW BFS AND DFS WORKS*/
 /*
 V = 6
@@ -160,27 +229,32 @@ Then do the same again
 
 
 
-void dfs (int node, vector <int> &vis, stack <int> &st, vector <int> adj[]) {
-    //This function does nothing takes the node make it visited and then takes all the connected node and make them visited as well. The speacial thing is that the node which is at the top means the one that was passed first is pushed last
+
+
+//TOPO SORT START FROM HERE
+void TopoSortDfs(int node, vector<vector<int>> &adj, vector<int> &vis, stack<int> &st) {
     vis[node] = 1;
-    for (auto it: adj[node])
+
+    for (int nextNode : adj[node])
     {
-        if(!vis[it]) dfs(it, vis, st, adj);
-    }       
+        if (!vis[nextNode]) {
+            TopoSortDfs(nextNode, adj, vis, st);
+        }
+    }
+
     st.push(node);
 }
 
-//TOPO SORT START FROM HERE
-vector <int> topoSort(int V, vector <int> adj[]) {
+vector <int> topoSort(int V, vector<vector<int>> &adj) {
     
     //Making a visited array and stack 
-    vector <int> vis (V,0); 
+    vector <int> vis (V + 1,0); 
     stack <int> st;
 
     //Check if the node is visited or not(obviously not visited if starting for first time) and giving it to dfs function if not visited
-    for (int i = 0; i < V; i++)
+    for (int i = 1; i <= V; i++)
     {
-        if(!vis[i]) dfs(i, vis, st, adj);
+        if(!vis[i]) TopoSortDfs(i, adj, vis, st);
     }
     //Making an answer array
     vector <int> ans;
@@ -196,12 +270,12 @@ vector <int> topoSort(int V, vector <int> adj[]) {
 
 
 
-vector <int> Kahn_Algorithm_Topological_Sort (int V, vector <int> adj[]) {
+vector <int> Kahn_Algorithm_Topological_Sort (int V, vector<vector<int>> &adj) {
     //In this we see indegree of the nodes. If the indegree of node is zero it means that there is no edge directed towards them, so we can put them in the queue and the ans array(we won't be disobeying topo sort condition). The node with indegree zero is traversed and the nodes with which it is connected, there indegree is decreased by one. If anyone of these is found to be zero they are also put in ans array and continued
 
     //This is to assign indegrees to node
-    int indegree[V] = {0};  //Can use vector as well
-    for (int i = 0; i < V; i++)
+    vector<int> indegree(V + 1, 0);  //Can use vector as well
+    for (int i = 1; i <= V; i++)
     {
         for (auto it: adj[i])
         {
@@ -211,7 +285,7 @@ vector <int> Kahn_Algorithm_Topological_Sort (int V, vector <int> adj[]) {
 
     //This is to check which nodes have zero indegree and push it into the queue(there will be atleast one due to DAG)
     queue <int> q;
-    for (int i = 0; i < V; i++)
+    for (int i = 1; i <= V; i++)
     {
         if(indegree[i] == 0) q.push(i);
     }

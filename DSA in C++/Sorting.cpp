@@ -49,7 +49,7 @@ void BubbleSort( vector<int> &arr) {     //Largest ko last me daal dete hai
 }
 void InsertionSort(vector<int> &arr, int n) {   //Smallest le kar usko first par daal dete hai
 int n = arr.size();
-for (int i = 0; i < n; i++)
+for (int i = 1; i < n; i++)
 {
     int j = i;
     while (j > 0 && arr[j-1] > arr[j])

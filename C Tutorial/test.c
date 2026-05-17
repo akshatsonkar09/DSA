@@ -1,69 +1,53 @@
 #include <stdio.h>
+#include <stdlib.h>
 
-#define MAX 10
+typedef struct Node {
+    int val;
+    struct Node *left;
+    struct Node *right;
+} TreeNode;
 
-int queue[MAX];
-int front = -1, rear = -1;
-
-void enqueue(int x){
-    if(rear == MAX-1){
-        printf("Overflow\n");
-        return;
-    }
-
-    if(front == -1)
-        front = 0;
-
-    queue[++rear] = x;
+TreeNode *createNode (int data) {
+    TreeNode *new = (TreeNode*)malloc(sizeof(TreeNode));
+    new->val = data;
+    new->left = new->right = NULL;
+    return new;
 }
 
-void dequeue(){
-    if(front == -1 || front > rear){
-        printf("Underflow\n");
-        return;
-    }
-    front++;
+TreeNode *InsertinBST (TreeNode* root, int data) {
+    if(root == NULL) return createNode(data);
+    else if(root->val > data) root->left = InsertinBST(root->left, data);
+    else root->right = InsertinBST(root->right, data);
+    return root;
 }
 
-void display(){
-    for(int i=front;i<=rear;i++)
-        printf("%d ",queue[i]);
-    printf("\n");
+void inorder(TreeNode* root, int arr[], int *i) {
+    if(root == NULL) return;
+
+    inorder(root->left, arr, i);
+    arr[(*i)++] = root->val;
+    inorder(root->right, arr, i);
 }
 
-void deleteNth(int n){
-    if(front == -1 || n > (rear-front+1)){
-        printf("Error: Invalid position\n");
-        return;
+void printarray (int arr[], int n) {
+    for (int i = 0; i < n; i++)
+    {
+        printf("%d ", arr[i]);
     }
-
-    for(int i=1;i<n;i++){
-        enqueue(queue[front]);
-        dequeue();
-    }
-
-    dequeue(); // delete nth
+    
 }
 
-int main(){
-
-    enqueue(1);
-    enqueue(2);
-    enqueue(3);
-    enqueue(4);
-    enqueue(5);
-
-    printf("Queue elements are: ");
-    display();
-
-    printf("Delete 7th element:\n");
-    deleteNth(7);
-
-    printf("Delete 3rd element:\n");
-    deleteNth(3);
-
-    printf("Queue elements are: ");
-    display();
-
+int main() {
+    int i = 0;
+    int Inorder[100];
+    TreeNode *root = createNode(100);
+    root = InsertinBST(root,50);
+    root = InsertinBST(root,20);
+    root = InsertinBST(root,25);
+    root = InsertinBST(root,75);
+    root = InsertinBST(root,125);
+    root = InsertinBST(root,150);
+    inorder(root, Inorder, &i);
+    printarray(Inorder,i);
     return 0;
 }

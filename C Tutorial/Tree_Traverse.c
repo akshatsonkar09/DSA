@@ -8,8 +8,7 @@ struct node {
 
     // Smart createnote function method
 struct node* createnode(int data) {
-    struct node* n;
-    n = (struct node*)malloc(sizeof(struct node));
+    struct node* n = (struct node*)malloc(sizeof(struct node));
     n->data = data;
     n->left = NULL;
     n->right = NULL;

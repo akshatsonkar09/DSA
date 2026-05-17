@@ -45,12 +45,14 @@ vector <int> InorderTreeTraversalIterative(Node* root) {
             st.push(node);
             node = node->left;
         }
+        else {
         if(st.empty()) break;
         node = st.top();
         st.pop();
         inorder.push_back(node->data);
         node = node->right;
     }
+}
     return inorder;
 }
 
@@ -102,6 +104,14 @@ vector<int> PostorderTreeTraversalIterative(Node* root) {
         PostorderTreeTraversalRecursive(root->right);
         cout << root->data << " ";
     }
+/* IMPORTANT
+    void inorder(struct TreeNode* root, vector<int> &v) {
+    if (root == NULL) return;
+
+    inorder(root->left, v);
+    v.push_back(root->val);
+    inorder(root->right, v);
+}*/
 
 Node* SearchinBST(Node* root,int val){
     while (root != NULL && root->data != val ) //while (root->data != val && root != NULL) is wrong because you are dereferencing root before checking if it is NULL. That is undefined behavior and will crash.
@@ -109,7 +119,7 @@ Node* SearchinBST(Node* root,int val){
         if(root->data < val) root = root->right;
         else root = root->left;
     }
-    return root;  
+    return root;
 }
 
 int floorinBST (Node *root, int key) {
