@@ -35,6 +35,24 @@ vector<vector<int>> MakeGraphUsingAdjacencyList(int node, int edge) {
     return adj;
 }
 
+// Converts an adjacency matrix to adjacency list.
+// Works with both weighted unweighted matrices.
+vector<vector<int>> ConvertMatrixToAdjacencyList(vector<vector<int>> &matrix) {
+    int n = matrix.size();
+    vector<vector<int>> adj(n);
+
+    // This file mostly uses 1-based node indexing, so index 0 is skipped.
+    for (int i = 1; i < n; i++) {
+        for (int j = 1; j < n; j++) {
+            if (matrix[i][j] != 0) {
+                adj[i].push_back(j);
+            }
+        }
+    }
+
+    return adj;
+}
+
 /*
 Steps of bfs 
 S1-> In function we need a adjacency list or matrix along with number of nodes ie V
@@ -268,6 +286,70 @@ vector <int> topoSort(int V, vector<vector<int>> &adj) {
     return ans;  
 }
 
+//Detect a cycle in undirected graph using BFS
+bool detectbfs(int src, vector<vector<int>> &matrix, vector<int>& vis) {
+        vis[src] = 1;
+        queue<pair<int,int>> q;
+        q.push({src,-1});
+        while(!q.empty()) {
+            int node = q.front().first;
+            int parent = q.front().second;
+            q.pop();
+
+            for(auto adjnode : matrix[node]) {
+                if(!vis[adjnode]) {
+                vis[adjnode] =1; 
+                q.push({adjnode,node});
+                }
+                else if(parent != adjnode) return true;
+            }
+        }
+        return false;
+    }
+
+    bool DetectCycleUsingBFS(vector<vector<int>>& matrix) {
+        int V = matrix.size();
+        vector<int> vis(V,0);
+        for(int i = 0; i<V; i++) {
+            if(!vis[i]) {
+                if (detectbfs(i,matrix,vis)) return true;
+            }
+        }
+        return false;
+    }
+
+
+//Detect a cycle in undirected graph using BFS
+    bool detectdfs() {}
+
+    bool DetectCycleUsingBFS(vector<vector<int>> matrix) {
+        
+    }
+
+
+
+vector<int> ShortestPathInUndirectedGraphofUnitWeightUsingBF (vector<vector<int>> &adj,int N, int M, int src) {
+    vector<int> dist(N,1e9);
+    dist[src] = 0;
+    queue<int> q;
+    q.push(src);
+    while(!q.empty()) {
+        int node = q.front();
+        q.pop();
+        for(auto it: adj[node]) {
+            if(dist[node] + 1 <dist[it]) {
+                dist[it] = 1 + dist[node];
+                q.push(it);
+            }
+        }
+    }
+    vector<int> ans(N,-1);
+    for (int i = 0; i < N; i++)
+    {
+        if(dist[i] != INT_MAX) ans[i] = dist[i];
+    }
+    return ans;
+}
 
 
 vector <int> Kahn_Algorithm_Topological_Sort (int V, vector<vector<int>> &adj) {

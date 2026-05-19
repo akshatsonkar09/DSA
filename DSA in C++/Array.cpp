@@ -46,7 +46,7 @@ vector <int> makeUnion (int arr1[], int arr2[], int n1, int n2) {
     return v;
 }
 
-void printallsubarray (vector <int> nums) {
+void printallsubarray (vector <int> nums) {     /*VVVVV IMP*/
     int n = nums.size();
 
     for (int i = 0; i < n; i++)     //starting index
@@ -76,8 +76,158 @@ int Longest_SubArray_with_Sum_K (vector <int> arr, int k) {
         if (right < n) sum += arr[right];
         return maxlength;
     }
-    
 }
+
+/*IMPORTANT -> THIS WAS ASKED IN GOOGLE*/
+int Longest_Consecutive_Sequence (vector<int> &arr) { 
+    int n = arr.size();
+    if (n == 0) return 0;
+    int maxlength = 1;
+    unordered_set <int> s;
+    for (int i = 0; i < n; i++) {
+        s.insert(arr[i]);
+    }
+    for(auto it : s) {
+        if (s.find(it - 1) == s.end()) { /*s.end() simply points to the end of the set ie as same as not found position which is same as the one given by s.find() if it-1 is not found */
+        int cnt = 1;
+        int x = it;
+        while (s.find(x + 1) != s.end()) {
+            cnt++;
+            x++;
+        }
+        maxlength = max(maxlength, cnt);
+        }
+    }
+    return maxlength;
+}
+
+
+
+
+    void setZeroes(vector<vector<int>>& matrix) {
+        //Instead of saving rows and columns we will now make it such that we see the first rows and first column of the matrix
+        //First we will mark the first row and column
+        int m = matrix.size();
+        int n = matrix[0].size();
+        int col0 = 1;
+
+
+        //This deals with first row and col and makes them zero
+        for (int i = 0; i < m; i++)
+        {
+            for (int j = 0; j < n; j++)
+            {
+                
+                if(matrix[i][j] == 0) {
+                    matrix[i][0] = 0;
+                    if (j != 0)
+                    {
+                        matrix[0][j] = 0;
+                    } else {
+                        int col1 = 0;
+                    }
+                }
+            }
+        }
+
+        //Now we do not fuck up the first row and column cause we need it that is why we traverse from 1 to n/m
+        //This take care of all the elements in the matrix except first row and col
+        for (int i = 1; i < n; i++)
+        {
+            for (int j = 1; j < m; j++)
+            {
+                if (matrix[i][j] != 0)
+                {
+                    if (matrix[0][j] == 0 || matrix[i][0] == 0)
+                    {
+                        matrix[i][j] = 0;
+                    }
+                }
+                
+            }
+        }
+
+        //Now matrix[0][0] is checked cause we did not check it in traversal and change the entire column if found 0
+        if(matrix[0][0] == 0) for (int j = 0; j < m; j++) matrix[0][j] = 0;
+
+        //Now col1 is checked cause we did not check it in traversal and change the entire row if found 0
+        if(col0 == 0) for (int i = 0; i < m; i++) matrix[i][0] = 0;
+    }
+
+
+    void Transpose(vector<vector<int>>& matrix) {
+        int n = matrix.size();
+        for(int i = 0; i < n; i++) {
+            for(int j = i + 1; j < n; j++) {
+                swap(matrix[i][j], matrix[j][i]);
+            }
+        }
+    }
+
+    void spiralOrder(vector<vector<int>>& matrix) {
+        vector<int> ans;
+        int m = matrix.size();
+        int n = matrix[0].size();
+
+        int top = 0;
+        int bottom = m-1;
+        int left = 0;
+        int right = n-1;
+
+        while (top<=bottom && left<=right)
+        {
+        //left to right
+        for (int i = left; i <= right; i++)
+        {
+            ans.push_back(matrix[top][i]);
+        }
+        top++;
+
+        //top to bottom
+        for (int i = top; i < bottom; i++)
+        {
+            ans.push_back(matrix[i][right]);
+        }
+        right--;
+
+        //right to left
+        if(top <= bottom) {
+        for (int i = right; i >= left; i--)
+        {
+            ans.push_back(matrix[bottom][i]);
+        }
+        bottom--;
+    }
+
+    //bottom to top
+    if(left<=right) {
+        for (int i = bottom; i >= top; i--)
+        {
+            ans.push_back(matrix[i][left]);
+        }
+        left++;
+    }
+        }
+    }
+
+    int subarraySum(vector<int>& nums, int k) {
+        int sum = 0;
+        int cnt = 0;
+        
+        for (int i = 0; i < nums.size(); i++)
+        {
+            for (int j = i; j < nums.size(); j++)
+            {
+                for (int k = i; k <= j; k++)
+                {
+                    sum+=nums[k];
+                }
+                if(sum == k) cnt++;
+                sum = 0;
+            }
+        }
+    }
+
 
 
 int main() {
