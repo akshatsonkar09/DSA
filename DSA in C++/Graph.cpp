@@ -320,10 +320,32 @@ bool detectbfs(int src, vector<vector<int>> &matrix, vector<int>& vis) {
 
 
 //Detect a cycle in undirected graph using BFS
-    bool detectdfs() {}
+    bool detectdfs(int node, int parent,vector<int> &vis,vector<vector<int>> adj) {
+        vis[node] = 1;
+        for (auto adjnode: adj[node])
+        {
+           if(!vis[adjnode]) {
+            if(detectdfs(adjnode,node,vis,adj)) return true;
+           }
+           else if(adjnode != parent) return true;
+        }
+    }
 
-    bool DetectCycleUsingBFS(vector<vector<int>> matrix) {
-        
+    bool DetectCycleUsingBFS(vector<vector<int>> matrix, int V) {
+        int n = matrix.size();
+
+        vector<vector<int>>adj(n);
+        adj = ConvertMatrixToAdjacencyList(matrix);
+
+        vector<int> vis(V,0);
+
+        for (int i = 0; i < V; i++)
+        {
+            if(!vis[i]) {
+                if(detectdfs(i,-1,vis,adj)) return true;
+            }
+        }
+        return false;
     }
 
 
