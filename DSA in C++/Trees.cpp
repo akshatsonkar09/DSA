@@ -143,6 +143,28 @@ int floorinBST (Node *root, int key) {
 }
 
 
+bool GetPathHelper (Node* root, vector<int> &arr, int key) {
+    if(!root) NULL;
+
+    arr.push_back(root->data);
+
+   if(GetPathHelper(root->left,arr,key) || GetPathHelper(root->right,arr,key)) return true;
+
+   arr.pop_back();
+   return false;
+}
+
+vector<int> GetPath (Node *root, int key) {
+    vector<int> arr;
+    if(!root) return arr;
+
+    GetPathHelper(root,arr,key);
+    return arr;
+}
+
+
+
+
 int main() {
 
     /*
