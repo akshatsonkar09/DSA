@@ -257,6 +257,26 @@ class QueueusingStack {
 
 
 
+class NextGreaterElementII {
+public:
+    vector<int> nextGreaterElements(vector<int>& nums) {
+        unordered_map <int, int> mp;
+        stack <int> st;
+        int n = nums.size();
+        vector<int> ans(2*n,0);
+
+        for (int i = 2*n-1; i >= 0 ; i--)
+        {
+            while (!st.empty() && nums[i%n] >= st.top()) st.pop();
+            if(st.empty()) ans[i%n] = -1;
+            else ans[i%n] = st.top();
+            st.push(nums[i%n]);
+        }
+        return ans;
+    }
+};
+
+
 int main()
 {
     // Stack using array

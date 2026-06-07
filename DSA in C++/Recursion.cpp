@@ -165,7 +165,7 @@ public:
     }
 };
 
-class PRINTPOWERSET
+class PRINTPOWERSETOFSTRING 
 {
 public:
     void generate(string curr, vector<string> &res, string str, int i, int n)
@@ -248,6 +248,29 @@ public:
     }
 };
 
+
+class PRINT_ALL_SUBSETS_USING_BITMASKING {
+public:
+    vector<vector<int>> printallsubsets(vector<int> &nums, int target)
+    {
+        int n = nums.size();
+        int subsets = (1<<n);
+
+        vector<vector<int>> ans;
+        for (int i = 0; i < subsets; i++)
+        {
+            vector<int> curr;
+            for (int j = 0; j < n; j++)
+            {
+                //Check if ith bit is set
+                if(i & (1<<n)) curr.push_back(nums[j]);
+            }
+            ans.push_back(curr);
+        }
+        return ans;
+    }
+};
+
 class COUNT_ALL_SUBSEQUENCES_WITH_K
 {
 public:
@@ -317,6 +340,64 @@ public:
     }
 };
 
+
+class COMBINATION_SUM_UNIQUE {
+public:
+    void func (vector<int>& candidates, vector<vector<int>> &ans, vector<int> &curr, int target, int i) {
+        
+        if(target == 0) {
+            ans.push_back(curr);
+            return;
+        }
+
+        // Pruning is done if sum exceeds target then return
+        if(i== candidates.size() || target < 0) return;
+
+        //Include
+        curr.push_back(candidates[i]);
+        func(candidates, ans, curr,target-candidates[i], i+1);
+
+        //Exclude
+        // The twist in this is that when excluding we are deciding to not put that certain value in that certain index but if we move to next index and get that same value again then it will it will include the value and our solution will be wrong. That is why to get correct solution we are moving until we get a different value
+        curr.pop_back();
+        int j =  i+1;
+        while(j<candidates.size() && candidates[j] == candidates[i]) j++;
+        func(candidates, ans, curr, target, j);
+    }
+
+    vector<vector<int>> combinationSum2(vector<int>& candidates, int target) {
+        //since we are going to no duplicates we need to have a certain order as well and that is why we have to first sort to get only values like (1,1,6) and not (1,6,1)
+        sort(candidates.begin(),candidates.end());
+        vector<vector<int>> ans;
+        vector<int> curr;
+        func(candidates, ans, curr,target, 0);
+        return ans;
+    }
+};
+
+
+class Solution {
+public:
+    void func(vector<vector<int>> &ans, vector <int> &curr, int k, int target, int ind) {
+        if(curr.size()==k && target == 0) ans.push_back(curr);
+        if(curr.size()>k || target < 0) return;
+
+        for (int i = ind; i <= 9; i++)
+        {
+            curr.push_back(i);
+            func(ans, curr, k, target-i,ind+1);
+            curr.pop_back();
+        }
+        return;
+    }
+
+    vector<vector<int>> combinationSum3(int k, int n) {
+        vector<vector<int>> ans;
+        vector <int> curr;
+        func(ans, curr, k, n, 1);
+        return ans;    
+    }
+};
 
 
 int main()

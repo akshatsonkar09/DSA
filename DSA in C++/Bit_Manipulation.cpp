@@ -44,7 +44,7 @@ void swap_number_without_third_variable (int a, int b) {
 }
 
 //brute force methods are converting them to binary, iterating till ith and changing
-void Check_if_ith_number_is_set (int N, int pos) {
+void Check_if_ith_number_is_set (int N, int pos) {    /*VVVV IMP*/
     /*left shift number 1 by i position and do & operation. Since all numbers due left shift are zero except the 1 at ith place. If & operation gives zero then ith is 0(Not set) if it gives 1 then ith is 1(Set)*/
     if (N & (1<<pos) == 1)
     {
@@ -60,7 +60,7 @@ void Check_if_ith_number_is_set (int N, int pos) {
     else return false*/
 }
 
-void Set_ith_bit(int N, int pos) {
+void Set_ith_bit(int N, int pos) {      /*VVVV IMP*/
     /*left shift number 1 by i position and do | operation. Since all numbers due left shift are zero except the 1 at ith place.| operation make 1 then ith is 0(Not set) and it makes 1 when ith is 1(Set)*/
     cout << (N | (1<<pos));
 }
@@ -90,6 +90,8 @@ void count_set_bits(int N) {
         N = N>>1;       //n/=2;
     }
 }
+
+// https://leetcode.com/tag/bit-manipulation/discuss/2960396/Bit-Manipulation-Guide-and-Tricks
 
 int main()
 {
