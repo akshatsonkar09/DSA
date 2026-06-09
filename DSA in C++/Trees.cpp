@@ -113,6 +113,113 @@ vector<int> PostorderTreeTraversalIterative(Node* root) {
     inorder(root->right, v);
 }*/
 
+
+    vector<int> PostOrderTraversal2Stack(Node* root) {
+        vector<int> ans;
+        if(root == NULL) return ans;
+        stack<Node*> st1, st2;
+        st1.push(root);
+
+        while(!st1.empty()) {
+            root = st1.top();
+            st1.pop();
+            st2.push(root);
+            if(root->left != NULL) st1.push(root->left);        //instead of ans we push it in st2
+            if(root->right != NULL) st1.push(root->right);
+        }
+        while(!st2.empty()) {
+            root = st2.top();
+            st2.pop();
+            ans.push_back(root->data);
+        }
+        return ans;
+    }
+
+    vector<int> PostOrderTraversal1Stack(Node *root) {
+         vector<int> ans;
+         if(root == NULL) return ans;
+         stack<Node*> st;
+         Node* curr = root;
+         
+         while (!st.empty())
+         {
+             if(curr != NULL) {
+                 st.push(curr);
+                 curr = curr->left;
+                } else {
+                    Node* temp = st.top()->right;
+                    if(temp == NULL) {
+                        temp = st.top()->right;
+                        st.pop();
+                        ans.push_back(temp->data);
+                        while (!st.empty() && temp == st.top()->right)
+                        {
+                            temp = st.top();
+                            st.pop();
+                            ans.push_back(temp->data);
+                        }   
+                    }
+                    else curr = temp;
+                }
+            }
+            return ans;
+        }
+        
+        
+        
+        vector<int> Pre_Post_In_Order_in_1_Traversal(Node *root) {
+            if(root == NULL) return;
+
+            vector<int> preorder;
+            vector<int> postorder;
+            vector<int> inorder;
+            
+            stack<pair<Node*,int>> st;
+            st.push({root,1});
+
+            while (!st.empty())
+            {
+                auto it = st.top();
+                st.pop();
+
+                //for preorder
+                if(it.second == 1) {
+                    preorder.push_back(it.first->data);
+                    it.second++;
+                    st.push(it);
+
+                    if(it.first->left != NULL) st.push({it.first->left,1});
+                }
+                
+                //for inorder
+                else if(it.second == 2) {
+                    inorder.push_back(it.first->data);
+                    it.second++;
+                    st.push(it);
+                    
+                    if(it.first->right != NULL) st.push({it.first->right,1});
+                }
+
+                //for postorder
+                else {
+                    postorder.push_back(it.first->data);
+                }
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Node* SearchinBST(Node* root,int val){
     while (root != NULL && root->data != val ) //while (root->data != val && root != NULL) is wrong because you are dereferencing root before checking if it is NULL. That is undefined behavior and will crash.
     {
