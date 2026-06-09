@@ -170,11 +170,15 @@ void DepthFirstSearchAdjacencyListHelper (int node, vector<vector<int>> &adj, in
     }
     
 }
-vector<int> DepthFirstSearchUsingAdjacencyList (int V, vector<vector<int>> &adj) {
-    vector<int> vis (V + 1,0);
-    int start = 1;
+vector<int> DepthFirstSearchUsingAdjacencyList(int V, vector<vector<int>> &adj) {
+    vector<int> vis(V + 1, 0);
     vector<int> dfs;
-    DepthFirstSearchAdjacencyListHelper(start, adj, V, vis, dfs);
+
+    for(int i = 1; i <= V; i++) {
+        if(!vis[i]) {
+            DepthFirstSearchAdjacencyListHelper(i, adj,V,vis, dfs);
+        }
+    }
     return dfs;
 }
 
@@ -250,17 +254,19 @@ Then do the same again
 
 
 //TOPO SORT START FROM HERE
+//What happens in dfs method is we do basic dfs but we keep on pushing on the node into stack but after recursion so that the deepest is into the stack first and at lowest and that will be the childrens while the parent's stack push is last due to 
+//Not preferred as this does not take care of cycles
 void TopoSortDfs(int node, vector<vector<int>> &adj, vector<int> &vis, stack<int> &st) {
     vis[node] = 1;
-
+    
     for (int nextNode : adj[node])
     {
         if (!vis[nextNode]) {
             TopoSortDfs(nextNode, adj, vis, st);
         }
     }
-
     st.push(node);
+    return;      //In dfs traversal stores as soon as visited but in topo sort -> Process after all children
 }
 
 vector <int> topoSort(int V, vector<vector<int>> &adj) {
@@ -268,7 +274,7 @@ vector <int> topoSort(int V, vector<vector<int>> &adj) {
     //Making a visited array and stack 
     vector <int> vis (V + 1,0); 
     stack <int> st;
-
+    
     //Check if the node is visited or not(obviously not visited if starting for first time) and giving it to dfs function if not visited
     for (int i = 1; i <= V; i++)
     {
@@ -286,40 +292,125 @@ vector <int> topoSort(int V, vector<vector<int>> &adj) {
     return ans;  
 }
 
-//Detect a cycle in undirected graph using BFS
-bool detectbfs(int src, vector<vector<int>> &matrix, vector<int>& vis) {
-        vis[src] = 1;
-        queue<pair<int,int>> q;
-        q.push({src,-1});
-        while(!q.empty()) {
-            int node = q.front().first;
-            int parent = q.front().second;
-            q.pop();
 
-            for(auto adjnode : matrix[node]) {
-                if(!vis[adjnode]) {
-                vis[adjnode] =1; 
-                q.push({adjnode,node});
+//Preferred as this does take care of cycles naturally
+vector <int> Kahn_Algorithm_Topological_Sort (int V, vector<vector<int>> &adj) {
+    //In this we see indegree of the nodes. If the indegree of node is zero it means that there is no edge directed towards them, so we can put them in the queue and the ans array(we won't be disobeying topo sort condition). The node with indegree zero is traversed and the nodes with which it is connected, there indegree is decreased by one. If anyone of these is found to be zero they are also put in ans array and continued
+    
+    //This is to assign indegrees to node
+    vector<int> indegree(V + 1, 0);  //Can use vector as well
+    for (int i = 1; i <= V; i++)
+    {
+        for (auto it: adj[i])
+        {
+            indegree[it]++;
+        }
+    }
+
+    //This is to check which nodes have zero indegree and push it into the queue(there will be atleast one due to DAG)
+    queue <int> q;
+    for (int i = 1; i <= V; i++)
+    {
+        if(indegree[i] == 0) q.push(i);
+    }
+
+    //Take the queue, save front, pop and put into ans. Then iterate the node, reducing the indegree of nodes connected to parent node by one push the nodes whose indegree became zero, into the queue
+    vector <int> topo;
+    while (!q.empty())
+    {
+        int node = q.front();
+        q.pop();
+        topo.push_back(node);
+
+        for (auto it: adj[node])
+        {
+           indegree[it]--;
+           if(indegree[it] == 0) q.push(it);
+        }
+    }
+    return topo;
+}
+
+//In this we are creating two vectors vis and dfsvis 
+//dfsvis is to solve the problem which arises in undirected cycle detect algo by checking if the already visited node is visited in the same dfsvis cycle or not
+//for that we are just adding an else if that if dfsvis[node] is already visited then we are visiting that same node in same recursion branch and
+// we are making it unvisited again if no cycle is detected
+class DETECT_CYCLE_IN_DIRECTED_GRAPH_USING_DFS {
+    private:
+    bool checkCycle(int node, vector<vector<int>> &adj, vector<int> &vis, vector<int> &dfsvis) {
+        vis[node]=1;
+        dfsvis[node]=1;
+
+        for (auto it: adj[node])
+        {
+           if(!vis[it]) {
+                if(checkCycle(it, adj, vis, dfsvis))  {
+                    return true;
                 }
-                else if(parent != adjnode) return true;
-            }
+           } 
+           else if(dfsvis[it]) return true;
         }
+        dfsvis[node] = 0;
         return false;
     }
+    public:
+    bool DetectCycleusingDFS(vector<vector<int>> &adj, int V) {
+        vector<int> vis (V+1,0);
+        vector<int> dfsvis (V+1,0);
 
-    bool DetectCycleUsingBFS(vector<vector<int>>& matrix) {
-        int V = matrix.size();
-        vector<int> vis(V,0);
-        for(int i = 0; i<V; i++) {
+        for (int i = 1; i <= V; i++)
+        {
             if(!vis[i]) {
-                if (detectbfs(i,matrix,vis)) return true;
+                if(checkCycle(i,adj,vis,dfsvis)) {
+                    return true;
+                }
             }
         }
-        return false;
+    return false;   
     }
+};
 
 
-//Detect a cycle in undirected graph using BFS
+//In UNDIRECTED it is very simple visiting any node which is not the parent and is already visited then yes it is cycle
+class DETECT_CYCLE_IN_UNDIRECTED_GRAPH_USING_BFS {
+    private:
+        bool detectbfs(int src, vector<vector<int>> &matrix, vector<int>& vis) {
+                vis[src] = 1;
+                queue<pair<int,int>> q;
+                q.push({src,-1});
+                while(!q.empty()) {
+                    int node = q.front().first;
+                    int parent = q.front().second;
+                    q.pop();
+    
+                    for(auto adjnode : matrix[node]) {
+                        if(!vis[adjnode]) {
+                        vis[adjnode] =1; 
+                        q.push({adjnode,node});
+                        }
+                        else if(parent != adjnode) return true;
+                    }
+                }
+                return false;
+            }
+
+    public:
+        bool DetectCycleUsingBFS(vector<vector<int>>& matrix) {
+            int V = matrix.size();
+            vector<int> vis(V,0);
+            for(int i = 0; i<V; i++) {
+                if(!vis[i]) {
+                    if (detectbfs(i,matrix,vis)) return true;
+                }
+            }
+            return false;
+        }
+    };
+
+
+
+class DETECT_CYCLE_IN_UNDIRECTED_GRAPH_USING_DFS {
+    private:
     bool detectdfs(int node, int parent,vector<int> &vis,vector<vector<int>> adj) {
         vis[node] = 1;
         for (auto adjnode: adj[node])
@@ -331,14 +422,15 @@ bool detectbfs(int src, vector<vector<int>> &matrix, vector<int>& vis) {
         }
     }
 
-    bool DetectCycleUsingBFS(vector<vector<int>> matrix, int V) {
+    public:
+    bool DetectCycleUsingDFS(vector<vector<int>> matrix, int V) {
         int n = matrix.size();
-
+    
         vector<vector<int>>adj(n);
         adj = ConvertMatrixToAdjacencyList(matrix);
-
+    
         vector<int> vis(V,0);
-
+    
         for (int i = 0; i < V; i++)
         {
             if(!vis[i]) {
@@ -347,10 +439,13 @@ bool detectbfs(int src, vector<vector<int>> &matrix, vector<int>& vis) {
         }
         return false;
     }
+};
 
 
 
-vector<int> ShortestPathInUndirectedGraphofUnitWeightUsingBF (vector<vector<int>> &adj,int N, int M, int src) {
+
+
+vector<int> ShortestPathInUndirectedGraphofUnitWeightUsingBFS (vector<vector<int>> &adj,int N, int M, int src) {
     vector<int> dist(N,1e9);
     dist[src] = 0;
     queue<int> q;
@@ -374,42 +469,44 @@ vector<int> ShortestPathInUndirectedGraphofUnitWeightUsingBF (vector<vector<int>
 }
 
 
-vector <int> Kahn_Algorithm_Topological_Sort (int V, vector<vector<int>> &adj) {
-    //In this we see indegree of the nodes. If the indegree of node is zero it means that there is no edge directed towards them, so we can put them in the queue and the ans array(we won't be disobeying topo sort condition). The node with indegree zero is traversed and the nodes with which it is connected, there indegree is decreased by one. If anyone of these is found to be zero they are also put in ans array and continued
 
-    //This is to assign indegrees to node
-    vector<int> indegree(V + 1, 0);  //Can use vector as well
-    for (int i = 1; i <= V; i++)
-    {
-        for (auto it: adj[i])
+class COURSE_SCHEDULE {
+private:
+    bool func(int course, vector<vector<int>>& adj,vector<int>& vis, vector<int>& dfsvis) {
+        vis[course] = 1;
+        dfsvis[course] = 1;
+
+        for (auto it: adj[course])
         {
-           indegree[it]++;
+           if(!vis[it]) {
+            //    if(func(it,numCourses,adj,vis,dfsvis)) return false;
+               if(!func(it,adj,vis,dfsvis)) return false;    //cycle found
+           }
+           else if(dfsvis[it]) return false;    //back edge cycle found
         }
+        dfsvis[course] = 0;
+        return true;    //no cycle
     }
+public:
+    bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
+        //way to think is by creating a direction and if it is a cycle then work cannot be done
 
-    //This is to check which nodes have zero indegree and push it into the queue(there will be atleast one due to DAG)
-    queue <int> q;
-    for (int i = 1; i <= V; i++)
-    {
-        if(indegree[i] == 0) q.push(i);
-    }
+        vector<vector<int>> adj(numCourses);
 
-    //Iterating the node which had zero indegree, reducing the indegree by one of the nodes which were connected to the main node and push the nodes which became zero into the queue
-    vector <int> topo;
-    while (!q.empty())
-    {
-        int node = q.front();
-        q.pop();
-        topo.push_back(node);
+        for(auto &p : prerequisites) adj[p[1]].push_back(p[0]);
 
-        for (auto it: adj[node])
+        vector<int> vis(numCourses, 0);
+        vector<int> dfsvis(numCourses, 0);
+
+        for (int i = 0; i < numCourses; i++)
         {
-           indegree[it]--;
-           if(indegree[it] == 0) q.push(it);
+            if(!vis[i]) {
+                if(!func(i,adj,vis,dfsvis)) return false;
+            }
         }
+        return true; 
     }
-    return topo;
-}
+};
 
 int main() {
     
