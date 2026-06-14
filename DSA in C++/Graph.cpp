@@ -250,7 +250,37 @@ Then do the same again
 
 
 
+class IS_GRAPH_BIPARTITE {
+private:
+    bool dfs(int node, int col, vector<int> & color, vector<vector<int>>& graph) {
+        color[node] = col;
 
+        for (auto adjnode: graph[node])
+        {
+           if(color[adjnode] == -1) {
+            if(dfs(adjnode, !col, color, graph) == false) return false;
+           }
+           else if (color[adjnode] == col) {
+            return false;
+           }
+        }
+        return true;
+        }
+
+public:
+    bool isBipartite(vector<vector<int>>& graph) {
+        int V = graph.size();
+        vector<int> color (V,-1);
+
+        for (int i = 0; i < V; i++)
+        {
+            if(color[i] == -1) {
+                if(dfs(i,0,color,graph) == false) return false;
+            }
+        }
+        return true;
+    }
+};
 
 
 //TOPO SORT START FROM HERE
@@ -508,6 +538,81 @@ public:
     }
 };
 
+
+
+class REVERSING_GRAPH_IN_AND_OUT_DEGREE {
+public:
+    vector<int> eventualSafeNodes(vector<vector<int>>& graph) {
+        int n = graph.size();
+        vector<vector<int>> adj(n);
+        vector<int> indegree(n,0);
+
+        // convert to adjacency list and reverse path as original graph gives us outdegree
+        //To convert i -> it to it -> i
+        for (int i = 0; i < n; i++)
+        {
+           for (auto it: graph[i])
+           {
+               adj[it].push_back(i);
+               indegree[i]++;
+           }
+        }
+    }
+};
+
+
+
+class SURROUND_REGION {
+private:
+    void dfs(vector<vector<char>>& board, vector<vector<int>> &vis, int delrow[], int delcol[], int row, int col) {
+        vis[row][col] = 1;
+
+        int m = board.size();
+        int n = board[0].size();
+
+        // int delrow[] = {-1,0,1,0};
+        // int delcol[] = {0,1,0,-1};   putting it here is memory wastage as for every dfs new this is created
+
+        for (int i = 0; i < 4; i++)
+        {
+            int r = row + delrow[i];
+            int c = col + delcol[i];
+ 
+            if(r >= 0 && r <= m && c >= 0 && c < n && !vis[r][c] && board[r][c] == 'O') dfs(board,vis,delrow,delcol, r, c);
+        }
+    }
+public:
+    void solve(vector<vector<char>>& board) {
+        int m = board.size();
+        int n = board[0].size();
+
+        int delrow[] = {-1,0,1,0};
+        int delcol[] = {0,1,0,-1};
+
+        vector<vector<int>> vis (m, vector <int>(n,0));
+
+        for (int j = 0; j < n; j++)
+        {
+            if(!vis[0][j] && board[0][j] == 'O') dfs(board, vis,delrow,delcol,0,j);
+            if(!vis[m-1][j] && board[m-1][j] == 'O') dfs(board, vis,delrow,delcol,m-1,j);
+        }
+        
+        for (int i = 1; i < m-1; i++)
+        {
+            if(!vis[i][0] && board[i][0] == 'O') dfs(board, vis,delrow,delcol,i,0);
+            if(!vis[i][n-1] && board[i][n-1] == 'O') dfs(board, vis,delrow,delcol,i,n-1);
+        }
+
+        for(int i = 0; i < m; i++)
+        {
+            for(int j = 0; j < n; j++)
+            {
+                if(board[i][j] == 'O' && !vis[i][j])
+                board[i][j] = 'X';
+            }
+        }
+    }
+};
 int main() {
     
     return 0;
