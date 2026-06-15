@@ -475,7 +475,7 @@ class DETECT_CYCLE_IN_UNDIRECTED_GRAPH_USING_DFS {
 
 
 
-vector<int> ShortestPathInUndirectedGraphofUnitWeightUsingBFS (vector<vector<int>> &adj,int N, int M, int src) {
+vector<int> Shortest_Path_In_Undirected_Graph_of_Unit_Weight_Using_BFS (vector<vector<int>> &adj,int N, int M, int src) {
     vector<int> dist(N,1e9);
     dist[src] = 0;
     queue<int> q;
@@ -484,7 +484,7 @@ vector<int> ShortestPathInUndirectedGraphofUnitWeightUsingBFS (vector<vector<int
         int node = q.front();
         q.pop();
         for(auto it: adj[node]) {
-            if(dist[node] + 1 <dist[it]) {
+            if(dist[node] + 1 < dist[it]) {
                 dist[it] = 1 + dist[node];
                 q.push(it);
             }
@@ -493,10 +493,149 @@ vector<int> ShortestPathInUndirectedGraphofUnitWeightUsingBFS (vector<vector<int
     vector<int> ans(N,-1);
     for (int i = 0; i < N; i++)
     {
-        if(dist[i] != INT_MAX) ans[i] = dist[i];
+        if(dist[i] != 1e9) ans[i] = dist[i];
     }
     return ans;
 }
+
+class SHORTEST_PATH_IN_DIRECTED_ACYCLIC_GRAPH_OF_WEIGHTED_EDGES_USING_TOPO_SORT_DFS
+{
+private:
+    void topo_sort_dfs(vector<vector<pair<int,int>>> &adj, vector<int> &vis, stack<int> &toposort, int node) {
+        vis[node] = 1;
+
+        for (auto it: adj[node])
+        {
+           if (!vis[it.first]) {
+             topo_sort_dfs(adj, vis, toposort, it.first);
+           }
+        }
+        toposort.push(node);
+    }
+    
+public:
+    vector<int> Shortest_Path_In_Directed_Acyclic_Graph (vector<vector<pair<int,int>>> &adj, int V, int src) {   //this adjacency list has weighted nodes that is why it has pair<node,distance>
+        
+        //First, Apply topo sort
+        
+        
+        vector<int> vis (V,0);
+        stack<int> toposort;
+
+        for (int i = 0; i < V; i++)
+        {
+            if(!vis[i]) topo_sort_dfs(adj, vis, toposort, i);
+        }
+        
+        
+        //Secondly update distances
+        vector<int> dist (V,1e9);
+        dist[src] = 0;
+
+        while (!toposort.empty())
+        {
+            int node = toposort.top();
+            toposort.pop();
+
+            for (auto it: adj[node])
+            {
+               int adjnode = it.first;
+               int distance = it.second;
+
+                
+               if(dist[node] != 1e9) dist[adjnode] = min(dist[adjnode], dist[node]+distance);
+               // dist[adjnode] = min(dist[adjnode], dist[node]+distance); Just this will not work due to possible negative weights + unreachble nodes will give 1e9 and then third step will not work  
+            
+
+            }
+        }
+
+        //Third, replace all unreachable node
+        for (int i = 0; i < V; i++) {
+        if (dist[i] == 1e9) dist[i] = -1;
+      }
+
+      return dist;
+    }
+};
+
+
+class DIJKSTRA_ALGORITHM_FOR_SHORTEST_PATH
+{
+private:
+    /* data */
+public:
+    //Priority Queue is used instead of queue because pq brings forth the minimal distance and leaves the one with larger distance but queue does not do that and checks all possible paths. It will also give answer but will take too much time 
+    vector<int> Dijksta_Algorithm_Using_Priority_Queue (vector<vector<pair<int,int>>> &adj, int V, int src) {    //this adjacency list has weighted nodes that is why it has pair<node,distance>
+        vector<int> dist (V,1e9);
+        // Priority Queue contans min possible curr distance for that node and the node itself
+        // priority_queue<pair<int,int>> pq;    This is by default max priority queue or max-heap which keeps max val at top 
+        priority_queue< pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> pq;
+
+        dist[src] = 0;
+        pq.push({0,src});
+
+        while (!pq.empty())
+        {
+            int currDist = pq.top().first;
+            int node = pq.top().second;
+            pq.pop();
+
+            //Stale Entry check that is to by-pass old nodes that are of no use because we found a better route already 
+            // Eg-> (7,1) and (10,1) 10,1 was pushed earlier but in between we found 7,1 and since 7<10 pq keeps it at top and process it first so when we will pop 10,1 it will be useledd
+            if(currDist > dist[node])
+            continue;
+
+            for (auto it: adj[node])
+            {
+                int adjnode = it.first;     //it[0] is also correct
+                int edgeweight = it.second;
+
+
+
+                if(edgeweight + currDist < dist[adjnode]) {
+                    dist[adjnode] = currDist + edgeweight;
+                    pq.push({dist[adjnode],adjnode});
+                }
+            }
+        }
+        return dist;
+    }
+    // Time: O((V + E) log V)
+    // Space: O(V)
+
+    //Set just fixes the stale condititon of priority queue
+     vector<int> Dijksta_Algorithm_Using_Set (vector<vector<pair<int,int>>> &adj, int V, int src) {
+        set<pair<int,int>> set;
+        vector<int> dist (V,0);
+
+        set.insert({0,src});
+        dist[src] = 0;
+
+                while (!set.empty())
+        {
+            auto it = *(set.begin());
+            int currDist = it.first;
+            int node = it.second;
+            set.erase(it);
+
+            for (auto it: adj[node])
+            {
+                int adjnode = it.first;     //it[0] is also correct
+                int edgeweight = it.second;
+
+                if(edgeweight + currDist < dist[adjnode]) {
+                    if(dist[adjnode] != 1e9) 
+                        set.erase({dist[adjnode], adjnode});
+
+                    dist[adjnode] = currDist + edgeweight;
+                    set.insert({dist[adjnode],adjnode});
+                }
+            }
+        }
+        return dist;
+     }
+};
 
 
 

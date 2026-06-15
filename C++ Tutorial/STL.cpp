@@ -348,6 +348,9 @@ st1.swap(st2);
 
         // largest value/char stay at top
         //Data is stored in form of tree and not in linear
+        // priority_queue<Type, Container, Comparator>
+        // less(return a<b) means give less priority to lower number
+        // greater(return a>b) means give more priority to lower number
 
         priority_queue<int> pq;
 
