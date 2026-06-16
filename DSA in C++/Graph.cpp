@@ -717,7 +717,7 @@ private:
             int r = row + delrow[i];
             int c = col + delcol[i];
  
-            if(r >= 0 && r <= m && c >= 0 && c < n && !vis[r][c] && board[r][c] == 'O') dfs(board,vis,delrow,delcol, r, c);
+            if(r >= 0 && r < m && c >= 0 && c < n && !vis[r][c] && board[r][c] == 'O') dfs(board,vis,delrow,delcol, r, c);
         }
     }
 public:
@@ -752,6 +752,47 @@ public:
         }
     }
 };
+
+
+
+
+class Solution {
+private:
+    void dfshelper(vector<vector<char>>& grid, vector<vector<int>> &vis, int i, int j, int delrow[], int delcol[]) {
+        vis[i][j] = 1;
+
+        
+
+        
+    }
+public:
+    int numIslands(vector<vector<char>>& grid) {
+    int m = grid.size();
+    int n = grid[0].size();
+
+    queue<pair<int,int>> q;
+    vector<vector<int>> vis (m, vector<int> (n,0));
+
+    int delrow[] = {-1,0,1,0};
+    int delcol[] = {0,1,0,-1};
+
+    for (int i = 0; i < m; i++)
+    {
+        for (int j = 0; j < n; j++)
+        {
+            if(grid[i][j] == '1' && !vis[i][j])
+            dfshelper(grid, vis,i,j,delrow, delcol);
+        }
+        
+    }
+    
+    
+    }
+};
+
+
+
+
 int main() {
     
     return 0;

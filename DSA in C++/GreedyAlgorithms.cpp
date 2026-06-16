@@ -98,6 +98,96 @@ double Fractional_Knapsack (vector<pair<int,int>> nums, int weight) {
     return totalval;
 }
 
+
+class INSERT_INTERVALS {
+public:
+    vector<vector<int>> insert(vector<vector<int>>& intervals, vector<int>& newInterval) {
+        vector<vector<int>> ans;
+        int n = intervals.size();
+        int i = 0;
+
+        // Problem with this was that you could not figure out how to push overlapping into ans so while is used and pushing into vector was manual
+        // for (int i = 0; i < intervals.size(); i++)
+        // {
+        //     //left part no overlapping
+        //     if(intervals[i][1] < newInterval[0]) ans.push_back(intervals[i]);
+        
+        //     //right part no overlapping
+        //     else if(intervals[i][0] > newInterval[1]) ans.push_back(intervals[i]);
+        
+        //     //overlapping part
+        //     else {
+            //         smallest = min(smallest,intervals[i][0], newInterval[0]);
+            //         largest = max(largest,intervals[i][1], newInterval[1]);
+            //     }
+            // }
+            
+            
+            
+        //left part no overlapping
+        while (i<n && intervals[i][1] < newInterval[0])
+        {
+            ans.push_back(intervals[i]);
+            i++;
+        }
+
+
+        //overlapping part
+        while(i<n && intervals[i][0] <= newInterval[1]) {
+        newInterval[0] = min(intervals[i][0], newInterval[0]);
+        newInterval[1] = max(intervals[i][1], newInterval[1]);
+        i++;
+        }
+        ans.push_back(newInterval);
+
+
+        //right poverlapping part
+        // while (i<n && intervals[i][0] > newInterval[1]) this part is wrong
+        while(i<n)
+        {
+            ans.push_back(intervals[i]);
+            i++;
+        }
+        return ans;
+    }
+};
+
+
+
+class MERGE_INTERVALS {
+    private:
+        void solve(vector<vector<int>>& intervals, vector<vector<int>> &ans, int &i) {
+            int smallest = intervals[i][0], largest = intervals[i][1];
+
+            while (i+1< intervals.size() && intervals[i+1][0] <= largest) 
+            {
+                largest = max(largest,intervals[i+1][1]);
+                i++;
+            }
+
+            ans.push_back({smallest,largest});
+            i++;
+
+            return;
+        }
+
+public:
+    vector<vector<int>> merge(vector<vector<int>>& intervals) {
+        int n = intervals.size();
+        vector<vector<int>> ans;
+        sort(intervals.begin(),intervals.end());
+        int i = 0;
+
+        while(i<n) {
+                solve(intervals,ans,i);
+            }
+
+            return ans;
+    }
+};
+
+
+
 int main()
 {
 
