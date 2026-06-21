@@ -209,6 +209,109 @@ vector<int> PostorderTreeTraversalIterative(Node* root) {
 
 
 
+class MORRIS_INORDER_TRAVERSAL
+{
+private:
+    Node* InorderPredecessor (Node *root) {
+        Node* IP = root->left;
+        while (IP->right && IP->right != root)
+        {
+            IP = IP->right;
+        }
+        return IP;
+    }
+
+public:
+    vector<int> inorderTraversal(Node* root) {
+        vector<int> ans;
+        Node* curr = root;      // current as root
+
+        while (curr != NULL) {
+
+            // Case 1: No left child hence no left subtree so now print root ie current node and move right
+            if (curr->left == nullptr) {
+                ans.push_back(curr->data);
+                curr = curr->right;
+            }
+
+            // Case 2: Left subtree exists
+            else {
+                // Find inorder predecessor ie rightmost node in left subtree
+                Node* IP = InorderPredecessor(curr);
+
+                //If IP ka right is null ie no thread created
+                if (IP->right == nullptr) {
+                    IP->right = curr;       // Create temporary thread
+                    curr = curr->left;      // Move to left subtree
+                }
+                
+                
+                //If IP ka right is not null ie thread is created
+                else {
+                    IP->right = nullptr;        // Remove thread (restore tree)
+                    ans.push_back(curr->data);  //Print after completing left
+                    curr = curr->right;         // Move to right subtree
+                }
+            }
+        } 
+        return ans;
+    }
+};
+
+
+
+class MORRIS_PREORDER_TRAVERSAL
+{
+private:
+    Node* InorderPredecessor (Node *root) {
+        Node* IP = root->left;
+        while (IP->right && IP->right != root)
+        {
+            IP = IP->right;
+        }
+        return IP;
+    }
+
+public:
+    vector<int> preorderTraversal(Node* root) {
+        vector<int> ans;
+        Node* curr = root;      // current as root
+
+        while (curr != NULL) {
+
+            // Case 1: No left child hence no left subtree so now print root ie current node and move right
+            if (curr->left == nullptr) {
+                ans.push_back(curr->data);
+                curr = curr->right;
+            }
+
+            // Case 2: Left subtree exists
+            else {
+                // Find inorder predecessor ie rightmost node in left subtree
+                Node* IP = InorderPredecessor(curr);
+
+                //If IP ka right is null ie no thread created
+                if (IP->right == nullptr) {
+                    ans.push_back(curr->data); // Print before going left
+                    IP->right = curr;       // Create temporary thread
+                    curr = curr->left;      // Move to left subtree
+                }
+
+
+                //If IP ka right is not null ie thread is created
+                else {
+                    IP->right = nullptr;        // Remove thread (restore tree)
+                    curr = curr->right;         // Move to right subtree
+                }
+            }
+        }
+        return ans;
+    }
+};
+
+
+
+
 class CONSTRUCT_BINARY_TREE_USING_PREORDER_AND_INORDER_TRAVERSAL
 {
 private:
@@ -290,11 +393,60 @@ private:
 
 
 
+Node* inorderSuccessor(Node* root, Node* target) {
+    Node* succ = nullptr;
+    Node* curr = root;
+
+    while (curr != NULL) {
+        if (target->data < curr->data) {     //If target is less than curr then move left and its prev is successor
+            succ = curr;
+            curr = curr->left;
+        }
+        else {      //If target is less than curr then move right
+            curr = curr->right;
+        }
+    }
+    return succ;
+}
 
 
+Node* inorderPredecessor(Node* root, Node* target) {
+    Node* pred = nullptr;
+    Node* curr = root;
+
+    while (curr != NULL) {      //If target is more than curr then move left and its prev is successor
+        if (target->data > curr->data) {
+            pred = curr;
+            curr = curr->right;
+        }
+        else {          //If target is less than curr then move right
+            curr = curr->left;
+        }
+    }
+    return pred;
+}
 
 
+class CONSTRUCT_BINARY_TREE_USING_PREORDER_TRAVERSAL {
+public:
+    Node* bstFromPreorder(vector<int>& preorder) {
+        int i = 0;
+        return build(preorder, i, INT_MAX);
+    }
 
+private:
+    Node* build(vector<int>& preorder, int& i, int bound) {
+        if (i == preorder.size() || preorder[i] > bound)
+            return NULL;
+
+        Node* root = new Node(preorder[i++]);
+
+        root->left = build(preorder, i, root->data);
+        root->right = build(preorder, i, bound);
+
+        return root;
+    }
+};
 
 
 

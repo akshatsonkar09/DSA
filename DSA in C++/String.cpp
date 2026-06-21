@@ -5,7 +5,7 @@ using namespace std;
 
 
 
-class Solution {
+class FREQUENCY_SORT {
     /*
 unordered_map is used for O(1) frequency counting.
 We cannot directly sort a map/unordered_map by frequency values,
@@ -61,6 +61,38 @@ public:
     }
 };
 
+
+
+class COUNT_NUMBER_OF_SUBSTRINGS
+{
+private:
+    int atMostKDistinct(string s, int k) {
+
+        int left = 0, res = 0;
+        unordered_map<char, int> freq;
+
+        for (int right = 0; right < s.size(); right++) {
+            // Add current character
+            freq[s[right]]++;
+    
+            // Shrink window if distinct characters exceed k
+            while (freq.size() > k) {
+                freq[s[left]]--;
+                if (freq[s[left]] == 0) freq.erase(s[left]);
+                left++;
+            }
+    
+            res += (right - left + 1); //For iteration 2 we have ab now it adds to the resultant ab which b and ab
+        }
+        return res;
+    }
+
+public:
+    int countSubstrings(string s, int k) {
+        // Exactly k = atMost(k) - atMost(k-1)
+        return atMostKDistinct(s, k) - atMostKDistinct(s, k - 1);
+    }
+};
 
 
 int main() {
