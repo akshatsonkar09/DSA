@@ -570,6 +570,7 @@ public:
         vector<int> dist (V,1e9);
         // Priority Queue contans min possible curr distance for that node and the node itself
         // priority_queue<pair<int,int>> pq;    This is by default max priority queue or max-heap which keeps max val at top 
+        //For Dijkstra, distance must be the first element.
         priority_queue< pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> pq;
 
         dist[src] = 0;
@@ -635,6 +636,53 @@ public:
         }
         return dist;
      }
+};
+
+
+
+
+class ShORTEST_PATH_BINARY_MATRIX {     //Dijkstra algorithm on matrix
+public:
+    int shortestPathBinaryMatrix(vector<vector<int>>& grid) {
+        int n = grid.size();
+        vector<vector<int>> dist (n, vector<int> (n,1e9));
+    priority_queue<pair<int,pair<int,int>>, vector<pair<int,pair<int,int>>>, greater<pair<int,pair<int,int>>> > pq;
+
+    if(grid[0][0] == 1 || grid[n-1][n-1] == 1) return -1;
+    if(n == 1) return 1;
+
+        dist[0][0] = 1;
+        pq.push({1,{0,0}});
+
+        int delrow[] = {-1,-1,0,1,1,1,0,-1};
+        int delcol[] = {0,1,1,1,0,-1,-1,-1};
+
+        while (!pq.empty())
+        {
+            int currDist = pq.top().first;
+            int row = pq.top().second.first;
+            int col = pq.top().second.second;
+            pq.pop();
+
+            if(currDist > dist[row][col]) continue;
+
+            for (int i = 0; i < 8; i++)
+            {
+                int nrow = row + delrow[i];
+                int ncol = col + delcol[i];
+            
+
+            if(nrow < n && nrow >= 0 && ncol < n && ncol >= 0 && grid[nrow][ncol] == 0) {
+                if(currDist+1 < dist[nrow][ncol]) {
+                    dist[nrow][ncol] = currDist+1;
+                    if(nrow == n-1 && ncol == n-1) return currDist+1;
+                    pq.push({1+currDist,{nrow,ncol}});
+                }
+            }
+            }
+        }
+        return -1;
+    }
 };
 
 
