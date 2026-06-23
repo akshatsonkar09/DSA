@@ -641,7 +641,7 @@ public:
 
 
 
-class ShORTEST_PATH_BINARY_MATRIX {     //Dijkstra algorithm on matrix
+class SHORTEST_PATH_BINARY_MATRIX {     //Dijkstra algorithm on matrix
 public:
     int shortestPathBinaryMatrix(vector<vector<int>>& grid) {
         int n = grid.size();
@@ -682,6 +682,196 @@ public:
             }
         }
         return -1;
+    }
+};
+
+
+class BELLMAN_FORD_ALGORITHM
+//Dijkstra alfortihm fails at negative cycles but not Bellman Ford
+// Bellman Ford works for Directed Graph but can be implemented in Undirected Graph as well
+//It is almost same as the dijkstra but relaxes weight for every node for V-1 iterations
+{
+private:
+
+public:
+    vector<int> Bellman_Ford_Algorithm(vector<vector<int>> &edges,int V, int src) {     //edges have from,to,weight
+        vector<int> dist(V,1e9);
+        dist[src] = 0;
+
+        for (int i = 0; i < V-1; i++)
+        {
+            for (auto it: edges)
+            {
+               int u = it[0];
+               int v = it[1];
+               int wt = it[2];
+               if(dist[v] != 1e9 && dist[u]+wt < dist[v]) {
+                dist[v] = dist[u]+wt;
+               }
+            }
+        }
+        //Nth relaxation to check negative cycle ie for every jump or cycle the shortest distance will keep on decreasing
+        for (auto it: edges)
+        {
+               int u = it[0];
+               int v = it[1];
+               int wt = it[2];
+               if(dist[v] != 1e9 && dist[u]+wt < dist[v]) return {-1};
+        }
+        return dist;
+    }
+};
+
+
+class FLOYD_WARSHAL_ALGORITHM { //Multi source shortest path algorithm and can also detect negative cycles
+private:
+
+public:
+    vector<vector<int>> Floyd_Warshal_Algorithm (vector<vector<int>> &matrix) {
+        int n = matrix.size();
+        
+        //Initializing matrix
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = 0; j < n; j++)
+            {
+                if(matrix[i][j] == -1) matrix[i][j] = 1e9;      //means that its shortest distance is not yet calculated
+                if(i==j) matrix[i][j] = 0;      //shortest distance of node to itself is zero
+            }
+        }
+
+        for (int k = 0; k < n; k++)     //Via
+        {
+            for (int i = 0; i < n; i++)     //From
+            {
+                for (int j = 0; j < n; j++)     //To
+                {
+                    if(matrix[i][k] == 1e9 || matrix[k][j] == 1e9) continue;
+                    matrix[i][j] = min( matrix[i][j], matrix[i][k]+ matrix[k][j]);
+                }
+                
+            }
+            
+        }
+        
+        //If negative cycle
+        for (int i = 0; i < n; i++)
+        {
+            if(matrix[i][i] < 0) matrix[i][i] = 0;
+        }
+        
+
+        //Finalilizing matrix
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = 0; j < n; j++)
+            {
+                if(matrix[i][j] == 1e9) matrix[i][j] = -1;      //means that its shortest distance can not be calculated
+            }
+        }
+        return matrix;
+    }
+};
+
+
+
+
+class SHORTEST_DISTANCE_WITH_MAX_K_STOPS {
+public:
+    int findCheapestPrice(int n, vector<vector<int>>& flights, int src, int dst, int k) {
+        vector<pair<int,int>> adj[n];
+        for (auto it: flights)
+        {
+           int u = it[0];
+           int v = it[1];
+           int wt = it[2];
+
+           adj[u].push_back({v,wt});
+        }
+
+        queue <pair<int, pair<int,int>>> q;
+        q.push({0,{src,0}});
+        vector<int> dist(n, 1e9);
+        dist[src] = 0;
+
+        while (!q.empty())
+        {
+            int stops = q.front().first;
+            int node = q.front().second.first;
+            int cost = q.front().second.second;
+            q.pop();
+
+            if(stops > k) continue;
+
+            for (auto it: adj[node])
+            {
+               int adjNode = it.first;
+               int edW = it.second;
+
+               if(cost + edW < dist[adjNode] && stops <= k) {
+                dist[adjNode] = cost + edW;
+                q.push({stops+1,{adjNode,cost + edW}});
+               }
+            }
+        }
+        if(dist[dst] == 1e9) return -1;
+        return dist[dst];
+    }
+};
+
+
+
+class COUNT_PATHS_TO_REACH_NODE_WITH_SHORTEST_DISTANCE {
+public:
+    int countPaths(int n, vector<vector<int>>& roads) {
+        vector<pair<int,int>> adj[n];
+        for (auto it: roads)
+        {
+           int u = it[0];
+           int v = it[1];
+           int wt = it[2];
+
+           adj[u].push_back({v,wt});
+        }
+
+        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
+
+        vector<int> dist(n, 1e9);
+        vector<int> ways(n, 0);
+
+        int src = 0;
+        int dst = n-1;
+        dist[src] = 0;
+        ways[src] = 1;
+
+        pq.push({0, src});
+
+        int mod = (int)(1e9 + 7);       //What is this?
+
+        while (!pq.empty()) {
+            int currDist = pq.top().first;
+            int node = pq.top().second;
+            pq.pop();
+
+            for (auto it : adj[node]) {
+
+                int adjNode = it.first;
+                int edgeWeight = it.second;
+
+                // If a shorter path is found, update the distance and number of ways
+                if (currDist + edgeWeight < dist[adjNode]) {
+                    dist[adjNode] = currDist + edgeWeight;
+                    pq.push({currDist + edgeWeight, adjNode});
+                    ways[adjNode] = ways[node];     //This line doesnt understand
+                }
+
+                // If the same shortest path is found, update the number of ways
+                else if (currDist + edgeWeight == dist[adjNode]) {
+                    ways[adjNode] = (ways[adjNode] + ways[node]) % mod;     // Increment the number of ways
+                }
+            }
+        }
+        return ways[dst] % mod;
     }
 };
 
@@ -803,40 +993,144 @@ public:
 
 
 
-
-class Solution {
+class PRISMS_ALGORITHM
+{
 private:
-    void dfshelper(vector<vector<char>>& grid, vector<vector<int>> &vis, int i, int j, int delrow[], int delcol[]) {
-        vis[i][j] = 1;
 
-        
-
-        
-    }
 public:
-    int numIslands(vector<vector<char>>& grid) {
-    int m = grid.size();
-    int n = grid[0].size();
+    vector<pair<int,int>> spanningTree(int V, vector<vector<int>> adj[]) {
+        priority_queue< vector<int>, vector<vector<int>>, greater<vector<int>> > pq;
+        vector<pair<int,int>> ans;
 
-    queue<pair<int,int>> q;
-    vector<vector<int>> vis (m, vector<int> (n,0));
+        vector<int> vis(V,0);
+        pq.push({0,0,-1});
+        //{wt,node,parent}
+        int MSTweight = 0;
 
-    int delrow[] = {-1,0,1,0};
-    int delcol[] = {0,1,0,-1};
-
-    for (int i = 0; i < m; i++)
-    {
-        for (int j = 0; j < n; j++)
+        while (!pq.empty())
         {
-            if(grid[i][j] == '1' && !vis[i][j])
-            dfshelper(grid, vis,i,j,delrow, delcol);
+            auto it = pq.top();
+            pq.pop();
+
+            int wt = it[0];
+            int node = it[1];
+            int parent = it[2];
+
+            if(vis[node]) continue;
+
+            vis[node] = 1;
+            MSTweight += wt;
+
+            if(parent != -1) ans.push_back({parent, node});
+
+            for (auto it: adj[node])
+            {
+               int adjNode = it[0];
+               int edW = it[1];
+
+               if(!vis[adjNode]) pq.push({edW, adjNode,node});
+            }
         }
-        
-    }
-    
-    
+        return ans;
     }
 };
+
+
+class DISJOINT_SET
+{
+    vector<int> rank, size, parent;
+private:
+    
+public:
+DISJOINT_SET(int n) {
+    rank.resize(n+1,0);
+    parent.resize(n+1);
+    for (int i = 0; i <= n; i++) parent[i] = i;
+}
+
+    int findUPar(int node) {
+        if(node == parent[node]) return node;
+        return parent[node] = findUPar(parent[node]);      //aka Path Compression
+    }
+
+    void unionByRank(int u, int v) {
+        int ulp_u = findUPar(u);
+        int ulp_v = findUPar(v);
+        if(ulp_u==ulp_v) return;
+        if(rank[ulp_u] < rank[ulp_v]) parent[ulp_u] = ulp_v;
+        else if(rank[ulp_u] > rank[ulp_v]) parent[ulp_v] = ulp_u;
+        else {
+            parent[ulp_v] = ulp_u;
+            rank[ulp_u]++;
+        }
+    }
+
+    void unionBySize(int u, int v) {
+        int ulp_u = findUPar(u);
+        int ulp_v = findUPar(v);
+        if(ulp_u==ulp_v) return;
+        if(size[ulp_u] < size[ulp_v]) {
+            parent[ulp_u] = ulp_v;
+            size[ulp_v] += size[ulp_u];
+        }
+        else {
+            parent[ulp_v] = ulp_u;
+            size[ulp_u] += size[ulp_v];
+        }
+    }
+};
+
+class DISJOINT_SET
+{
+public:
+    vector<int> rank, size, parent;
+DISJOINT_SET(int n) {
+    rank.resize(n+1,0);
+    parent.resize(n+1);
+    for (int i = 0; i <= n; i++) parent[i] = i;
+}
+
+    int findUPar(int node) {
+        if(node == parent[node]) return node;
+        return parent[node] = findUPar(parent[node]);      //aka Path Compression
+    }
+
+    void unionByRank(int u, int v) {
+        int ulp_u = findUPar(u);
+        int ulp_v = findUPar(v);
+        if(ulp_u==ulp_v) return;
+        if(rank[ulp_u] < rank[ulp_v]) parent[ulp_u] = ulp_v;
+        else if(rank[ulp_u] > rank[ulp_v]) parent[ulp_v] = ulp_u;
+        else {
+            parent[ulp_v] = ulp_u;
+            rank[ulp_u]++;
+        }
+    }
+};
+
+class DISJOINT_SET_APPLICATION {
+public:
+    int makeConnected(int n, vector<vector<int>>& connections) {
+        DISJOINT_SET ds(n);
+        int cntExtras = 0;
+
+        for(auto it: connections) {
+            int u = it[0];
+            int v = it[1];
+
+            if(ds.findUPar(u) == ds.findUPar(v)) cntExtras++;
+            else ds.unionByRank(u,v);
+        }
+        int cntConnected = 0;
+        for(int i = 0; i<n; i++) {
+            if(ds.parent[i] == i) cntConnected++;
+        }
+        int ans = cntConnected -1;
+        if(cntExtras>= ans) return ans;
+        return -1;
+    }
+};
+
 
 
 
