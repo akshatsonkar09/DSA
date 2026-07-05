@@ -188,6 +188,9 @@ public:
     }
 };
 
+//N*3 means 3 columns and n rows
+
+
 int main()
 {
 
