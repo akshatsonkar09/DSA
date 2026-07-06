@@ -95,6 +95,43 @@ public:
 };
 
 
+class Solution {
+private:
+    int checkFreq(string s) {
+        int hash[26] = {0};
+        int mini = INT_MAX ,maxi = INT_MIN;
+
+        for (char x: s) hash[x-'a']++;
+        for (int it: hash) {
+            mini = min(mini, it);
+            maxi = max(maxi, it);
+        }
+        return maxi-mini;
+    }
+public:
+    int beautySum(string s) {
+        int n = s.length();
+        int ans = 0;
+
+        
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = i+1; j < n; j++)
+            {
+                int beauty = checkFreq(s.substr(i,j-i+1));
+                if(beauty <= 0) continue;
+                else {
+                    ans += beauty;
+                }
+            }
+            
+        }
+        return ans;
+    }
+};
+
+
+
 int main() {
     
     return 0;

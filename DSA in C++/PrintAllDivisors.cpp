@@ -26,21 +26,4 @@ public:
 };
 
 int main() {
-    // Create object of Solution class
-    Solution sol;
-
-    // Input number
-    int N = 36;
-
-    // Get divisors
-    vector<int> result = sol.getDivisors(N);
-
-    // Print the result
-    cout << "Divisors of " << N << ": ";
-    for (int val : result) {
-        cout << val << " ";
-    }
-    cout << endl;
-
-    return 0;
 }

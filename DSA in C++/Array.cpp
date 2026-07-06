@@ -261,7 +261,233 @@ public:
 };
 
 
+class LARGEST_SUBARRAY_WITH_SUM_0
+{
+private:
+    /* data */
+public:
+    int Largest_Subarray_with_Sum_zero(vector<int> &A, int n) {
+        unordered_map<int,int> mp;      //element and index 
+        int sum= 0, maxi = 0;
+        for (int i = 0; i < n; i++)
+        {
+            if(sum == 0) {
+                maxi = i+1;
+            }
+            else {
+                if(mp.find(sum) != mp.end()) {  //End and find same place par point nahi kar rahe hai yaani ki value mujhe mil gayi hai
+                    maxi = max(maxi, i-mp[sum]);
+                }
+                else {
+                    mp[sum] = i;
+                }
+            }
+        }
+        
+    }
+};
 
+
+class COUNT_SUBARRAYS {
+    private:
+
+    public:
+    int countSubarrays(vector<int>& A, int k) {
+        unordered_map<int, int> freq;
+        freq[0] = 1;            // Initialize with prefix XOR 0
+        
+        
+        int prefixXor = 0;
+        int count = 0;
+        
+        for (int num : A) {
+            prefixXor ^= num;
+            
+            int target = prefixXor ^ k;
+            
+            // If target exists in map, add its frequency
+            if (freq.find(target) != freq.end()) {
+                count += freq[target];
+            }
+            // Store current prefix XOR in map
+            freq[prefixXor]++;
+        }
+        return count;
+    }
+};
+
+
+class COUNT_INVERSION_IN_ARRAY {
+    private:
+    
+    int merge(vector<int> &arr, int low, int mid, int high) {
+        vector<int> temp;
+        
+        int left = low;
+        int right = mid + 1;
+        
+        int cnt = 0;
+        
+        while (left <= mid && right <= high) {
+            if (arr[left] <= arr[right]) {
+                temp.push_back(arr[left]);
+                left++;
+            } else {
+                temp.push_back(arr[right]);
+                cnt += (mid - left + 1); // All remaining left elements are inversions
+                right++;
+            }
+        }
+        
+        while (left <= mid) {
+            temp.push_back(arr[left]);
+            left++;
+        }
+        
+        while (right <= high) {
+            temp.push_back(arr[right]);
+            right++;
+        }
+        
+        // Copy back to original array
+        for (int i = low; i <= high; i++) {
+            arr[i] = temp[i - low];
+        }
+        return cnt;
+    }
+    
+    int mergeSort(vector<int> &arr, int low, int high) {
+        int cnt = 0;
+        
+        if (low >= high) return cnt;
+        
+        int mid = (low + high) / 2;
+        
+        cnt += mergeSort(arr, low, mid);
+        cnt += mergeSort(arr, mid + 1, high);
+        cnt += merge(arr, low, mid, high);
+        
+        return cnt;
+    }
+    
+    public:
+    int numberOfInversions(vector<int>& a, int n) {
+        return mergeSort(a, 0, n-1);
+    }
+};
+    
+    
+class Solution {
+public:
+    int maxProductMethod1(vector<int>& nums) {
+        int mini = nums[0];
+        int maxi = nums[0];
+        int ans = nums[0];
+
+        for (int i = 1; i < nums.size(); i++)
+        {
+            if(nums[i] < 0) swap(mini,maxi);
+
+            mini = min(nums[i], mini * nums[i]);
+            maxi = max(nums[i], maxi * nums[i]);
+
+            ans = max(ans, maxi);
+        }
+        return ans;    
+    }
+
+    int maxProductMethod2(vector<int>& nums) {
+        int maxi = INT_MIN;
+        int prod=1;
+
+        for(int i=0;i<nums.size();i++)
+        {
+          prod*=nums[i];
+          maxi=max(prod,maxi);
+          if(prod==0)
+           prod=1;
+        }
+        prod=1;
+        for(int i=nums.size()-1;i>=0;i--)
+        {
+          prod*=nums[i];
+
+          maxi=max(prod,maxi);
+          if(prod==0)
+           prod=1;
+        }
+        return maxi;
+    }
+};
+
+
+    
+
+class REVERSE_PAIR {
+private:
+    int countPairs(vector<int>& nums, int low, int mid, int high) {
+        int right = mid+1;
+        int cnt = 0;
+        for (int i = low; i <= mid; i++)
+        {
+            while (right <= high && nums[i] > 2*nums[right]) right++;
+            cnt += (right-(mid+1));
+        }
+        return cnt;
+    }
+
+    void merge (vector<int>& nums, int low, int mid, int high) {
+        vector<int> temp;
+        int left = low;
+        int right = mid+1;
+
+        while (left <= mid && right <= high)
+        {
+            if(nums[left] <= nums[right]) {
+                temp.push_back(nums[left]);
+                left++;
+            }
+            else {
+                temp.push_back(nums[right]);
+                right++;
+            }
+        }
+
+
+            while (left<= mid)
+            {
+                temp.push_back(nums[left]);
+                left++;
+            }
+
+
+            while (right <= high)
+            {
+                temp.push_back(nums[right]);
+                right++;
+            }
+
+            for (int i = low; i <= high; i++) nums[i] = temp[i-low];
+    }
+
+    int mergesort(vector<int>& nums, int low, int high) {
+        int cnt = 0;
+        if(low >= high) return cnt;
+        int mid = low + (high-low)/2;
+
+        cnt += mergesort(nums, low, mid);
+        cnt += mergesort(nums, mid+1, high);
+        cnt += countPairs(nums,low,mid,high);
+        merge(nums,low,mid,high);
+
+        return cnt;
+    }
+
+public:
+    int reversePairs(vector<int>& nums) {
+        return mergesort(nums, 0, nums.size()-1);
+    }
+};
 
 
 

@@ -91,6 +91,45 @@ void count_set_bits(int N) {
     }
 }
 
+vector<int> Two_Single_Number_in_Array(vector<int>& nums) {
+    // so first we need to find the first bit which separated the desired numbers
+    int val = 0;
+    for (int i = 0; i < nums.size(); i++) val = val^nums[i];
+
+    //Now we have val as Xor of two single digits present
+    //We will find the first bit which separates the number that 1 since due to XOR only the place which had 1 and 0 are left while 00 and 11 are now 0
+
+    // VVVV IMP -> num = 10100 num-1 = 10011 as you can see all bit right of set bit are turned into 0 and set bit itself is now  not set
+
+    int rightmost = (val & (val-1)) ^ val;
+
+    //IMPORTANT -> Now bucket method checks the righmost set bit of the value and separates value based on whether nums[i] have rightmost val set or not as both single numbers have different bits at rightmost set bit place hence they are separated
+
+    int b1= 0, b2=0;
+
+    for (int i = 0; i < nums.size(); i++)
+    {
+        if(rightmost & nums[i]) b1 = b1^nums[i];
+        else b2 = b2^nums[i];
+    }
+    return {b1,b2};
+    
+}
+
+
+class PRINT_PRIME_FACTORS_OF_A_NUMBER
+{
+private:
+
+public:
+
+};
+
+
+
+
+
+
 // https://leetcode.com/tag/bit-manipulation/discuss/2960396/Bit-Manipulation-Guide-and-Tricks
 
 int main()
