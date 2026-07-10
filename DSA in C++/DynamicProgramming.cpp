@@ -3,6 +3,17 @@
 
 using namespace std;
 
+
+/*
+Think of memoization as
+"I don't know this answer.
+Let me ask recursion."
+
+Think of tabulation as
+"I already computed this answer earlier.
+Let me read it from the table."
+*/
+
 class CLIMBINGSTAIRS
 {
 private:
@@ -191,47 +202,90 @@ public:
 //N*3 means 3 columns and n rows
 
 
+// 2D DYNAMIC PROGRAMMING
+// dp[index][state] where state could be: ,previous activity, previous color, previous choice etc.
 
-// Recursive function to calculate the maximum points for the ninja training
-int f(int day, int last, vector<vector<int>> &points, vector<vector<int>> &dp) {
-    // If the result for this day and last activity is already calculated, return it
-    if (dp[day][last] != -1) return dp[day][last];
 
-    // Base case: When we reach the first day (day == 0)
-    if (day == 0) {
-        int maxi = 0;
-        // Calculate the maximum points for the first day by choosing an activity
-        // different from the last one
-        for (int i = 0; i <= 2; i++) {
-            if (i != last)
-                maxi = max(maxi, points[0][i]);
+class NINJA_TRAINING    //Three activities which give some experience only one activity can be performed at that day. So maximize experience
+{
+private:
+    int helper(int day, int lasttask, vector<vector<int>> &points, vector<vector<int>> &dp);
+// Suppose today is day i and yesterday's activity was last. You try every activity except last.
+
+    int helpermemoirization(int day, int lasttask, vector<vector<int>> &points, vector<vector<int>> &dp) {
+        //this is base case so we are just taking the maximum possible
+        if(day == 0) {
+            int maxi = 0;
+            for (int task = 0; task < 3; task++)
+            {
+                if(task != lasttask) maxi = max(maxi, points[0][task]);
+            }
+            return maxi;
         }
-        // Store the result in dp array and return it
-        return dp[day][last] = maxi;
+
+        //If value is already in the dp
+        if (dp[day][lasttask] != -1)
+            return dp[day][lasttask];
+
+        int ans = 0;
+
+        for (int task = 0; task < 3; task++)
+        {
+            if(task != lasttask) {
+                ans = max(ans, points[day][task] + helper(day-1, task, points, dp));
+            }
+        }
+        
+        /*  This is how ans = max(...) works
+        i) n-1th day activity i done   n-2th day with activity i as lasttask
+        1)            30             +                f(1,0) and so on
+        2)            60             +                f(1,1) and so on
+        3)            90             +                f(1,2) and so on
+        */
+       return dp[day][lasttask] = ans;
     }
 
-    int maxi = 0;
-    // Iterate through the activities for the current day
-    for (int i = 0; i <= 2; i++) {
-        if (i != last) {
-            // Calculate the points for the current activity and add it to the
-            // maximum points obtained so far (recursively calculated)
-            int activity = points[day][i] + f(day - 1, i, points, dp);
-            maxi = max(maxi, activity);
-        }
+
+
+public:
+
+    int ninjaTraining(int n, vector<vector<int>> &points) {
+       vector<vector<int>> dp(n, vector<int>(4, -1));   //no previous activity is 3 that is why a vector of size 4 even with 3 activities
+
+        // Start the recursive calculation from the last day with no previous activity
+        return helper(n-1, 3, points, dp);
     }
 
-    // Store the result in dp array and return it
-    return dp[day][last] = maxi;
-}
+    int ninjaTraining_Tabulation(int n, vector<vector<int>> &points) {
+        vector<vector<int>> dp(n, vector<int>(4, -1));
 
-// Function to find the maximum points for ninja training
-int ninjaTraining(int n, vector<vector<int>> &points) {
-    // Create a memoization table (dp) to store intermediate results
-    vector<vector<int>> dp(n, vector<int>(4, -1));
-    // Start the recursive calculation from the last day with no previous activity
-    return f(n - 1, 3, points, dp);
-}
+        //Based on if last task 1 than today task is either 0 or 2
+        //Base Case
+        dp[0][0] = max(points[0][1], points[0][2]);
+        dp[0][1] = max(points[0][2], points[0][3]);
+        dp[0][2] = max(points[0][1], points[0][3]);
+        dp[0][3] = max({points[0][0], points[0][1], points[0][2]});
+
+        for (int day = 0; day < n; day++)
+        {
+            for (int lasttask = 0; lasttask < 4; lasttask++)
+            {
+                dp[day][lasttask] = 0;      //Just just to make it zero before computing real value and help against negative values that is why no -1
+                
+                for (int task = 0; task < 3; task++)
+                {
+                    if(task != lasttask) {
+                        int point = points[day][task] + dp[day-1][task];
+                        dp[day][lasttask] = max(dp[day][lasttask], point);
+                    }
+                }
+            }
+        }
+        return dp[n-1][3];
+        
+    }
+};
+
 
 
 int main()
