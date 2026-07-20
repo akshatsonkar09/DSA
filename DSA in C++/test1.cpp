@@ -3,27 +3,29 @@
 
 using namespace std;
 
-class Solution
-{
+class Solution {
 public:
-    int mySqrt(int x)
-    {
-        if (x == 0 || x == 1) return x;
+    vector<vector<int>> shiftGrid(vector<vector<int>>& grid, int k) {
+        int m = grid.size();
+        int n = grid[0].size();
+        vector<vector<int>> matrix (m,vector<int>(n,-1));
 
-        int low = 1, high = x;
+        int r = k%(m*n);
+        if(r == 0) return grid;
 
-        while (low <= high)
+        for (int i = 0; i < m; i++)
         {
-            long long mid = low + (high - low) / 2;
-
-            long long square = (long long)mid * (long long)mid;
-
-            if (square == x) return mid;
-            else if (square > x) high = mid - 1;
-            else low = mid + 1;
+            for (int j = 0; j < n; j++)
+            {
+                int index = i*n+j;
+                int newIndex = (index+k)%(m*n);
+                int row = newIndex/n;
+                int col = newIndex%n;
+                
+                matrix[i][j] = grid[row][col];
+            }
         }
-
-        return high;
+        return matrix;
     }
 };
 
