@@ -5,27 +5,27 @@ using namespace std;
 
 class Solution {
 public:
-    vector<vector<int>> shiftGrid(vector<vector<int>>& grid, int k) {
-        int m = grid.size();
-        int n = grid[0].size();
-        vector<vector<int>> matrix (m,vector<int>(n,-1));
+    int maxActiveSectionsAfterTrade(string s) {
+        int n = s.length();
 
-        int r = k%(m*n);
-        if(r == 0) return grid;
+        //augment string
+        s.insert(s.begin(),'1');
+        s.insert(s.end(),'1');
 
-        for (int i = 0; i < m; i++)
+        vector<int> pos;
+
+        for (int i = 1; i <= n; i++) 
+            if(s[i] == '1') pos.push_back('i');
+
+
+        int maxi = -1;
+        for (int i = 1; i+1 < pos.size(); i++)
         {
-            for (int j = 0; j < n; j++)
-            {
-                int index = i*n+j;
-                int newIndex = (index+k)%(m*n);
-                int row = newIndex/n;
-                int col = newIndex%n;
-                
-                matrix[i][j] = grid[row][col];
-            }
+            int len = pos[i+1] - pos[i-1] - 1;
+            maxi = max(maxi, len);
         }
-        return matrix;
+        
+        return maxi;
     }
 };
 
