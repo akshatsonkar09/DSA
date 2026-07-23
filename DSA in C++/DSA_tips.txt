@@ -1,9 +1,27 @@
-If any kind of search works for a smal range and then doesnt work further then we can always apply binary search
-You can turn to binary search whenever ther is something like minimun integer
+Binary Search
+    You can binary search only if: check(k) is false false false true true true, or true true true false false.
+
+    If any kind of search works for a small range and then doesnt work further then we can always apply binary search
+
+    You can turn to binary search whenever ther is something like minimun integer
+
 While writing if statement you can simply use c >'a' amd c < 'z' C++ doesnt mind just put both small and capital letters
-For any stack first check empty condititon and then case condition  [st.empty() && st.top() != '(' CORRECT)] [st.top() != '(' || st.empty() WRONG)]
+
+Stack and Queues
+    For any stack first check empty condititon and then case condition  [st.empty() && st.top() != '(' CORRECT)] [st.top() != '(' || st.empty() WRONG)]
+
 During interviews first go from brute then better then optimal approach.
-In trees for recursive traversal just do the O L R method for preorder-> ans.pushback(root->val) L R/ for inorder-> L in R/ for postorder-> L R post
-In trees for iterative traversal just 
-In Linked List Tortoise and hare method makes my time complexity N/2
-In array you can use reverse,swap functions
+
+Trees
+    In trees for recursive traversal just do the O L R method for preorder-> ans.pushback(root->val) L R/ for inorder-> L in R/ for postorder-> L R post
+    In trees for iterative traversal just 
+
+Linked List
+    In Linked List Tortoise and hare method makes my time complexity N/2
+
+Array    
+    In array you can use reverse,swap functions
+
+
+Bit Manipulation
+    Unique XOR Triplets	XOR cannot create a higher bit than the highest set bit present. Count depends on bit-width, not on enumerating triplets.

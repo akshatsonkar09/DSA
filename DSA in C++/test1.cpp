@@ -5,29 +5,23 @@ using namespace std;
 
 class Solution {
 public:
-    int maxActiveSectionsAfterTrade(string s) {
-        int n = s.length();
+    int uniqueXorTriplets(vector<int>& nums) {
+        int n = nums.size();
+        if(n<=2) return n;
+        int ans = 2;
+        //Xor cannot create new bit hence for if n = 4 then only 3 bits so answer has to a 3 bit value and by hit and trial we can determine that it will have all the value from 0 to 2^n-1 values
+        //Basically agar 3 bit hi hai 1,2,3,4 to 7 me toh 4 bit wala number ban hi nahi sakta hai
 
-        //augment string
-        s.insert(s.begin(),'1');
-        s.insert(s.end(),'1');
-
-        vector<int> pos;
-
-        for (int i = 1; i <= n; i++) 
-            if(s[i] == '1') pos.push_back('i');
-
-
-        int maxi = -1;
-        for (int i = 1; i+1 < pos.size(); i++)
+        while (n != 1)
         {
-            int len = pos[i+1] - pos[i-1] - 1;
-            maxi = max(maxi, len);
+            n /= 2;
+            ans *= 2;
         }
-        
-        return maxi;
+        return ans;
     }
 };
+
+
 
 int main()
 {
