@@ -7,18 +7,36 @@ class Solution {
 public:
     int uniqueXorTriplets(vector<int>& nums) {
         int n = nums.size();
-        if(n<=2) return n;
-        int ans = 2;
-        //Xor cannot create new bit hence for if n = 4 then only 3 bits so answer has to a 3 bit value and by hit and trial we can determine that it will have all the value from 0 to 2^n-1 values
-        //Basically agar 3 bit hi hai 1,2,3,4 to 7 me toh 4 bit wala number ban hi nahi sakta hai
+        if(n == 1 || n ==2) return n;
+        unordered_set <int> st;
+        int pairXor[2048] = {0};
+        int tripletXor[2048] = {0};
 
-        while (n != 1)
-        {
-            n /= 2;
-            ans *= 2;
+        //saare possible pair of Xor ko 1 kar diya matlab agar ek value hai jo ki hai 5 jo kisi do number ka xor hai toh usko pairXor[5] =1 kar diya
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                pairXor[nums[i]^nums[j]] = 1;
+            }
         }
-        return ans;
-    }
+
+        //j ko traverse kar sakte hai kyunki contraints sirf 1500 tak ki hai isliye 2 power 11 yaani 2046 le liya hai ab check karenge ki j ki kis values par yeh array 1 hai yaani pair exists karta hai aur agar karta hai toh uska nums[i] ke saakth triplet nikaal denge
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = 0; j < 2048; j++)
+            {
+                if(pairXor[j] == -1) continue; 
+                tripletXor[j^ nums[i]] = 1;
+            }
+        }
+
+        int ans = 0;
+        
+        for (int i = 0; i < 2048; i++)
+        {
+            ans += tripletXor[i];
+        }
+        
+    } 
 };
 
 
