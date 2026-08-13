@@ -149,13 +149,6 @@ public:
     }
 };
 
-class Solution
-{
-public:
-    int rob(vector<int> &nums)
-    {
-    }
-};
 
 class HOUSEROBBER
 {
@@ -333,6 +326,101 @@ private:
 public:
     int uniquePaths(int m, int n) {
         return func_tabulation(m,n);
+    }
+};
+
+
+
+class SUBSET_SUM_CHECK
+{
+private:
+    bool subsetsumutil_memoization(int ind, int target,vector<int>& arr, vector<vector<int>>& dp) {
+        if(target == 0) return true;
+        if(ind == 0) return arr[0] == target;
+
+        if(dp[ind][target] != -1) return dp[ind][target];
+
+        bool elementnottaken = subsetsumutil_memoization(ind-1, target, arr, dp);
+
+        bool elementtaken = false;
+        if (arr[ind] <= target)
+        {
+            elementtaken = subsetsumutil_memoization(ind-1,target - arr[ind], arr, dp);
+        }
+
+        return dp[ind][target] = elementnottaken || elementtaken;
+    }
+
+
+    
+    public:
+    bool Subset_Sum(int target, vector<int>& arr, int n) {
+        vector<vector<int>> dp(n, vector<int> (target+1, -1));
+        return subsetsumutil_memoization(n-1, target, arr, dp);
+    }
+    
+    
+    
+    bool subsetsumutil_tabulation(int target, vector<int>& arr, int n) {
+        vector<vector<int>> dp(n, vector<int> (target+1, -1));
+        
+        for (int i = 0; i < n; i++)
+        {
+            dp[i][0] = true;
+        }
+        
+        if(arr[0] <= target) {
+            dp[0][arr[0]] = true;
+        }
+        
+        for (int ind = 0; ind < n; ind++)
+        {
+            for (int target = 0; target <= target; target++)
+            {
+                bool elementnottaken = dp[ind-1][target];
+                
+                bool elementtaken = false;
+                if(arr[ind] <= target) {
+                    elementtaken = dp[ind-1][target-arr[ind]];
+                }
+                
+                dp[ind][target] = elementnottaken || elementtaken;
+            }
+            return dp[n-1][target];
+        }
+    }
+};
+
+
+
+class Solution {
+    private:
+    bool helper(int ind, int target,vector<int>& arr, vector<vector<int>>& dp) {
+        if(target == 0) return true;
+        if(ind == 0) return arr[0] == target;
+        
+        if(dp[ind][target] != -1) return dp[ind][target];
+        
+        bool elementnottaken = helper(ind-1, target, arr, dp);
+        
+        bool elementtaken = false;
+        if (arr[ind] <= target)
+        {
+            elementtaken = helper(ind-1,target - arr[ind], arr, dp);
+        }
+        
+        return dp[ind][target] = elementnottaken || elementtaken;
+    }
+    public:
+    bool canPartition(vector<int>& nums) {
+        int n = nums.size();
+        int sum = accumulate(nums.begin(),nums.end(),0);
+        
+        if(sum%2 != 0) return false;
+        int target = sum/2;
+
+        vector<vector<int>> dp(n, vector<int> (target+1, -1));
+        return helper(n-1, target, nums, dp);
     }
 };
 

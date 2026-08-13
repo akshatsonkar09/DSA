@@ -19,11 +19,30 @@ Trees
 Linked List
     In Linked List Tortoise and hare method makes my time complexity N/2
 
-Array    
+Array
+    can use -> reverse, swap, compartment
+
     In array you can use reverse,swap functions
+
+    If array is sorted than try to Create Blocks and use reverse or swap
 
 
 Bit Manipulation
     Unique XOR Triplets	XOR cannot create a higher bit than the highest set bit present. Count depends on bit-width, not on enumerating triplets.
+    a^a = 0
+    a^0 = a
 
     If three values need to be operated and they are associative that is (a op b) op c = a op (b op c) so if we don't have to try all possible combos, instead of O(n^3) we can do two loops 1 for first two pairs and save it then then with the pairs and third number and make it O(2n^2) but it will only work for small constraints as we need a finite and small dataset for storing the answer of first loop ie ans of pairs and use it in third one 
+
+    For sum and missing value type questions you can use XOR using expected and got and doing XOR to find missing
+
+    
+
+
+Game Strategy
+    When its your turn do your best and when its opponents turn expect the worst
+
+Two Pointer
+    Start with j++ and if that doesnt work then do other things
+    
+    Try to make it for loop instead of while loop
