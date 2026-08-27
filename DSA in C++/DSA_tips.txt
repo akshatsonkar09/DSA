@@ -20,11 +20,22 @@ Linked List
     In Linked List Tortoise and hare method makes my time complexity N/2
 
 Array
-    can use -> reverse, swap, compartment
+    1) For sorted arrays you can use -> reverse, swap, compartment
 
-    In array you can use reverse,swap functions
+    2) In array you can use built-in reverse,swap functions
 
-    If array is sorted than try to Create Blocks and use reverse or swap
+    3) If array is sorted than try to Create Blocks and use reverse or swap(Left Rotate Array by K)
+
+    4) The output array itself isn't counted as "auxiliary space" in most conventions, since producing output is unavoidable for the problem — it's not extra working memory.(Union of two sorted array)
+
+    5) Always check what happens in the empty case.ie first push ke liye empty check hoga (Union of two sorted array)
+
+    6) mp.find(val) != mp.end()     meaning that if find and end do not point at same direction return true which happens when value is found
+
+    7) For (Two Sum) map way is taking value at index i and finding how mucn more we need and then checking that value in the map with its index saved.
+
+    8) Majority Element -> Majority also works in compartments as well for 10 6 is majority but so is 3 in 4, 3 in 4 and 2 in 2.
+    Use test case [2,2,1,1,1,2,2]
 
 
 Bit Manipulation
