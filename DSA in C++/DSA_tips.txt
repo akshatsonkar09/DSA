@@ -1,11 +1,51 @@
 Binary Search
-    You can binary search only if: check(k) is false false false true true true, or true true true false false.
+    1) You can binary search only if: check(k) is false false false true true true, or true true true false false.
 
-    If any kind of search works for a small range and then doesnt work further then we can always apply binary search
+    2) If any kind of search works for a small range and then doesnt work further then we can always apply binary search
 
-    You can turn to binary search whenever ther is something like minimun integer
+    3) You can turn to binary search whenever there is something like minimun integer
 
-While writing if statement you can simply use c >'a' amd c < 'z' C++ doesnt mind just put both small and capital letters
+    4) lower bound of x is index where smallest arr[ind] >= x ( works same as binary search and ceil and first occurence)
+       upper bound of x is index where smallest arr[ind] > x (floor and last occurence is upper bound -1)
+       both inbuilt lower and upper bound functions return iterator so use *
+
+    5) For rotated sorted array check if left or right which is sorted using mid low and high comparison and then apply binary and l++ h-- if mid high and low all same value
+
+    6) Single element in sorted array -> O(n) is XOR but since sorted O(logn) is possible thru binary and by checking odd-even polarity even have 1st occurence while odd has second
+
+    7) kth missing problem self solve -> arr[mid]-mid-1;
+
+    8) Aggressive Cow and Book allocation are easy just need to see there codes a few time and keep the steps in mind
+
+    THINKING FOR BOOK ALLOCATION
+        i) In this question it was pages so we have to choose from different number of pages so it will be our search space
+        ii) choose low and high (max of min pages) VV IMP LINE
+            lowest we can go is giving one book to everyone that is max element of arr
+            highest is when all is given to one student ie sum of arr 
+        iii) now see polarity to check the high and low movement
+
+    9) Majority of BS in answers question are those where we apply BS just to limit or reduce our search in number
+
+        S1-> Find arr we need to apply BS on by seeing which value is changing to find answer (mostly on answer)
+
+        S2-> Find the low and high 
+
+        S3-> Check polarity and Apply the BS algo
+        S4 and S5 if S3 is not enough
+
+        S4-> between mid and if else right the function based on question
+
+        S5-> choose if else conditions based on question and where to move if that condition is followed
+
+        S6-> return low/high/mid (high for TTTFFF and low for FFFTTTT polarity)
+
+
+    10) For search in 2D array -> high = (n*m)-1
+                              -> row = mid/m, col = mid % m;
+
+    
+
+While writing if statement you can simply use c >'a' and c < 'z' C++ doesnt mind just put both small and capital letters
 
 Stack and Queues
     For any stack first check empty condititon and then case condition  [st.empty() && st.top() != '(' CORRECT)] [st.top() != '(' || st.empty() WRONG)]
@@ -32,20 +72,67 @@ Array
 
     6) mp.find(val) != mp.end()     meaning that if find and end do not point at same direction return true which happens when value is found
 
-    7) For (Two Sum) map way is taking value at index i and finding how mucn more we need and then checking that value in the map with its index saved.
+    7) For (Two Sum) map way is taking value at index i and finding how mucn more we need and then checking that value in the map with its index saved. For three sum fix one and sort if order doesnt matter and skip over duplicate values wherever encountered
 
-    8) Majority Element -> Majority also works in compartments as well for 10 6 is majority but so is 3 in 4, 3 in 4 and 2 in 2.
+    8) Majority Element -> Moore's Voting Theorem-> Majority also works in compartments as well for 10 6 is majority for full array but so is 3 in 4 element (part 1), 3 in 4 element (part 2) and 2 in 2 element (part 3).
     Use test case [2,2,1,1,1,2,2]
+
+    for majority elements in array we need a number >n/2 and there exist <= 1 such numbers
+    for elements occurring >n/3 there exists <=2 such numbers
+    for elements occuring >n/i there exists <=(i-1) such numbers
+
+    9) Longest subarray with sum K
+        Two Pointer approach -> l and r pointers, Move r right to increase the window sum and move l right to decrease the window sum. BUT Do not work with negative values. With negative values, moving l can increase the sum and moving r can decrease the sum, so the required monotonic behavior is lost.
+
+        Hashmap approach -> Work with negative value as well.
+            -> Hashmap<prefixsum, index>, prefixsum, maxlen. Traverse array, add val to prefixsum, check if prefixsum-k is 1) equal to k, then maxlen is i+1 or 2) present in map, if yes do currind-index and take maxlen, if no then just add to map
+
+    10) Dutch National Flag Algorithm -> Sort of 3 numbers(0,1,2) simple three pointer solution where we take low,mid,high or zeros,ones,twos where mid will traverse from beginning until passes high, high will take 2 and low will take 0 while mid skips over 1 and rest are simple swap and inc/dec of low,high,mid
+
+    11) Kadane's Algo is simple finding largest subarray sum which works on set sum to 0 if sum goes less than zero because earlier positive value can no longer compensate for the other negative values.
+    To give array where sum is 0 keep that index and when sum>maxsum keep that as ansendind and i as ansstartind 
+
+    12) Next Permutation -> 
+        Traverse from second last, when you get first dip in value then that value is taken as a[i]. Now find a value smallest value greater than a[i]. Swap the two values and reverse i+1 to end. Also take care of no dip case then reverse entire array
+
+    13) 90 degree rotation = Transpose + Row wise reverse
+        180 = reverse row + reverse column
+        270 = transpose + reverse col
+
+        Transpose is swap of i,j with j,i
+
+        Just see the for loop for transpose ie upper part of matrix only needed means a pattern of 
+        * * *
+          * *
+            *
+        but do not take the diagonal or you can take diagonal as well doesnt make a difference in thiquestion
+
+        MAIN THING IS   i = 0->n   and j=i+1->n
+
+    14) VVV IMP (Count subarray equal k)
+        Concept of prefixsum is that instead of finding the subarray in between we check the x-k of it as that is something which starts from the beginning and is easier to trrack using a hashmap which will contain xx-k value and other ind or cnt or desired value
+        same can be used for prefix xor and such
+
+    15) (Max Product Subarray)
+        M-1-> Because of negative and zero value the max/min can be positive or negative so we use left to right and right to left traversal
+
+        M-2-> Kadanes with min/max both save cause aaj ka min kal ka max ho sakta hai due to negative multiply
+
+    16) Hash map without External space if-> 
+        The key is changed to minus when visited -> Used when values are in range of the array size.
+        Problem is that we only check if it exists or not. Cannot keep cnt of element
 
 
 Bit Manipulation
-    Unique XOR Triplets	XOR cannot create a higher bit than the highest set bit present. Count depends on bit-width, not on enumerating triplets.
+    1) Unique XOR Triplets -> XOR cannot create a higher bit than the highest set bit present. Count depends on bit-width, not on enumerating triplets.
     a^a = 0
     a^0 = a
 
-    If three values need to be operated and they are associative that is (a op b) op c = a op (b op c) so if we don't have to try all possible combos, instead of O(n^3) we can do two loops 1 for first two pairs and save it then then with the pairs and third number and make it O(2n^2) but it will only work for small constraints as we need a finite and small dataset for storing the answer of first loop ie ans of pairs and use it in third one 
+    2) If three values need to be operated and they are associative that is (a op b) op c = a op (b op c) so if we don't have to try all possible combos, instead of O(n^3) we can do two loops 1 for first two pairs and save it then then with the pairs and third number and make it O(2n^2) but it will only work for small constraints as we need a finite and small dataset for storing the answer of first loop ie ans of pairs and use it in third one 
 
-    For sum and missing value type questions you can use XOR using expected and got and doing XOR to find missing
+    3) For sum and missing value type questions, you can use XOR using expected and obtained and doing XOR to find missing
+        One of the ways is using a duplicate array to cancel others like 1,2,3,5 with your own 1,2,3,4,5 will give missing
+        There is another way in Array point 16
 
     
 
@@ -57,3 +144,19 @@ Two Pointer
     Start with j++ and if that doesnt work then do other things
     
     Try to make it for loop instead of while loop
+
+
+Graph
+    1) Image Overlap
+        In this question we need frequency of coordinates, so I took {{r,c},freq} format(which is only possible with ordered map) however since we only needed frequency in the question we can encode the row and column in one val like in this question it is {r*1000+c,freq} now it can be solved in unordered map
+
+
+
+Valid Sudoku is a good question see the code and see how to check
+
+
+8 * n is calculated as: int * int → int     SO potential overflow
+8LL * n is calculated as: long long * int → long long     SO no overflow
+
+Sliding window
+    1) Agar subarray banane hai toh sliding window consider kar sakte ho

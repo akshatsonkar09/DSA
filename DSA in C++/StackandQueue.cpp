@@ -112,7 +112,7 @@ class StackusingLinkedList
             if(top == NULL) return;
             Node* temp = top;
             top = top->next;
-            temp->next = nullptr;
+            temp->next = NULL;
             delete temp;
             size--;
         }
@@ -138,17 +138,17 @@ class QueueUsingLinkedList {
     };
 
     int size = 0;
-    Node* start = nullptr;
-    Node* end = nullptr;
+    Node* start = NULL;
+    Node* end = NULL;
 
     void push(int val) {//Ignore this for now
         if(start == NULL) {
-            Node* temp = new Node(nullptr,val);
+            Node* temp = new Node(NULL,val);
             start = end = temp;
             size++;
             return;
         }
-        Node* temp = new Node(nullptr,val);
+        Node* temp = new Node(NULL,val);
         end->next = temp;
         end=temp;
         size++;
@@ -260,7 +260,8 @@ class QueueusingStack {
 class NextGreaterElementII {
 public:
     vector<int> nextGreaterElements(vector<int>& nums) {
-        unordered_map <int, int> mp;
+        
+        unordered_map<int,int> mp;
         stack <int> st;
         int n = nums.size();
         vector<int> ans(2*n,0);

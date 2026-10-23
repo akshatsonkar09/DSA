@@ -62,36 +62,114 @@ void printallsubarray (vector <int> nums) {     /*VVVVV IMP*/
     }
 }
 
-int Longest_SubArray_with_Sum_K (vector <int> arr, int k) {
-    int n = arr.size();
-    int left = 0, right = 0;
-    long long sum = arr[0];
-    int maxlength = 0;
-
-    while (right < n)
+int Longest_Subarray_with_sum_k(vector<int> &nums, int k) {
+    // Hashmap method works with negative values as while while two pointer fails
+    int n = nums.size();
+    unordered_map <int , int> hashmap;
+    // hashmap[0] = 0;
+    hashmap[0] = -1;
+    int presum = 0, maxlen = 0;
+    for (int i = 0; i < n; i++)
     {
-        while (left < right && sum > k) sum -= arr[left++];
-        if (sum == k) maxlength = max(maxlength, right - left + 1);
-        right++;
-        if (right < n) sum += arr[right];
-        return maxlength;
+        presum += nums[i];
+        
+        if (hashmap.find(presum-k) != hashmap.end())
+        {
+            maxlen = max(maxlen, i-hashmap[presum-k]);
+        }
+        // hashmap[presum] = i;    //This is wrong because  want to store the first occurrence of each prefix sum because an earlier index gives a longer subarray.
+
+        if(hashmap.find(presum-k) == hashmap.end()) {
+            hashmap[presum] = i;
+        }
+
+    }
+    return maxlen;
+    }
+
+int Longest_Subarray_With_sum_k(vector<int> &nums, int k) {
+    int n = nums.size();
+    int presum = 0, maxlen = 0;
+    unordered_map<int,int> hashmap;
+
+    for (int i = 0; i < n; i++)
+    {
+        presum += nums[i];
+
+        if(presum == k) {
+            // maxlen = i+1;
+            maxlen = max(maxlen,i+1);       //above or below both are fine
+        }
+
+        int rem = presum-k;
+        if(hashmap.find(rem) != hashmap.end()) {
+            int len = i - hashmap[rem];      //why no +1 just take a small eg 1,2,4 with k = 6 and you will understand
+            maxlen = max(maxlen, len);
+        }
+        
+        if(hashmap.find(rem) == hashmap.end()) {
+            hashmap[presum] = i;
     }
 }
+    return maxlen;
+}
+
+
+class NEXT_PERMUTATION {
+public:
+    void nextPermutation(vector<int>& nums) {
+        int n = nums.size();
+
+        int ind = -1;
+        for (int i = n-2; i >= 0; i--)
+        {
+            if(nums[i] < nums[i+1]) {
+                ind = i;
+                break;
+            }
+        }
+
+        if(ind == -1) {
+            reverse(nums.begin(), nums.end());
+            return;
+        }
+
+        for (int i = n-1; i >= 0; i--) {
+            if(nums[ind] < nums[i]) {
+                swap(nums[ind],nums[i]);
+                break;
+            }
+        }
+
+        // reverse(nums.end(), nums.end()-n-ind-1); This is wrong 
+        reverse(nums.end()-n-ind-1, nums.end());    //This is fine
+        // reverse(nums.begin()+i+1, nums.end());      This is also correct
+
+        return;
+    }
+};
+
 
 /*IMPORTANT -> THIS WAS ASKED IN GOOGLE*/
 int Longest_Consecutive_Sequence (vector<int> &arr) { 
     int n = arr.size();
     if (n == 0) return 0;
+
     int maxlength = 1;
     unordered_set <int> s;
+
     for (int i = 0; i < n; i++) {
         s.insert(arr[i]);
     }
+
     for(auto it : s) {
-        if (s.find(it - 1) == s.end()) { /*s.end() simply points to the end of the set ie as same as not found position which is same as the one given by s.find() if it-1 is not found */
+
+        if (s.find(it-1) == s.end()) {      //start counting only if we are at first value of consecutive array
+        
         int cnt = 1;
         int x = it;
-        while (s.find(x + 1) != s.end()) {
+
+        while (s.find(x+1) != s.end()) {
             cnt++;
             x++;
         }
@@ -102,10 +180,33 @@ int Longest_Consecutive_Sequence (vector<int> &arr) {
 }
 
 
+void Dutch_National_Flag_Algo(vector <int> &nums) {
+    int n = nums.size();
+    int low = 0, mid = 0, high = n-1;
 
+    while (mid <= high)
+    {
+        if (nums[mid] == 0)
+        {
+            swap(nums[low],nums[mid]);
+            low++;
+            mid++;
+        }
+        else if (nums[mid] == 1)
+        {
+            mid++;
+        }
+        else
+        {
+            swap(nums[mid],nums[high]);
+            high--;
+        }
+    }
+}
 
     void setZeroes(vector<vector<int>>& matrix) {
-        //Instead of saving rows and columns we will now make it such that we see the first rows and first column of the matrix
+        //Instead of saving rows and columns we will now make it such that we see the first rows and first column of the matrix and use them as labels
+        
         //First we will mark the first row and column
         int m = matrix.size();
         int n = matrix[0].size();

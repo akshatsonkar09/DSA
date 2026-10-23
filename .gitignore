@@ -1,0 +1,52 @@
+# ==========================================
+# Virtual Environments & Packages
+# ==========================================
+# Default virtual environment directories
+.venv/
+venv/
+ENV/
+env/
+
+# Custom virtual environments identified in subdirectories
+**/numpy_pandas/
+**/ml_tutorial/
+**/dl_tutorial/
+**/aug/
+
+# Any future virtual environment folder directly under subdirectories
+# (Ignores any directory named with all lowercase letters containing Python binaries)
+/*/*/[a-z]*/
+
+# ==========================================
+# DataSets & Large Media / Books
+# ==========================================
+# Data directories (often contain large CSVs, images, or model weights)
+**/DataSets/
+**/DataSets/**
+
+# PDF Books & Archive Files
+*.pdf
+*.zip
+*.tar.gz
+*.rar
+
+# ==========================================
+# Python & Jupyter Notebook Caches
+# ==========================================
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Temporary runner files (VS Code Code Runner)
+tempCodeRunnerFile.py
+*.tmp
+
+# ==========================================
+# IDEs & System Junk
+# ==========================================
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
