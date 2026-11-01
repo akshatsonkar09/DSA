@@ -122,6 +122,7 @@ Array
         The key is changed to minus when visited -> Used when values are in range of the array size.
         Problem is that we only check if it exists or not. Cannot keep cnt of element
 
+    17) To check if any string can be made a palindrome -> Atmost 1 character with odd frequency
 
 Bit Manipulation
     1) Unique XOR Triplets -> XOR cannot create a higher bit than the highest set bit present. Count depends on bit-width, not on enumerating triplets.
@@ -134,7 +135,9 @@ Bit Manipulation
         One of the ways is using a duplicate array to cancel others like 1,2,3,5 with your own 1,2,3,4,5 will give missing
         There is another way in Array point 16
 
-    
+    4)  // First mistake was XOR minimum need to be found at last and not at every step
+
+    5)  // For XOR if min is needed then undesirable can be made INT_MAX and vice versa??
 
 
 Game Strategy
@@ -160,3 +163,8 @@ Valid Sudoku is a good question see the code and see how to check
 
 Sliding window
     1) Agar subarray banane hai toh sliding window consider kar sakte ho
+
+
+3963. Create Grid With Exactly One Path
+        string str(n,'#');      //this is a good way to initialse a string
+        vector<string> grid(n, string(m, '#'));     // this is create a ["###","###"]

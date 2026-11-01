@@ -571,7 +571,7 @@ public:
         // Priority Queue contans min possible curr distance for that node and the node itself
         // priority_queue<pair<int,int>> pq;    This is by default max priority queue or max-heap which keeps max val at top 
         //For Dijkstra, distance must be the first element.
-        priority_queue< pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> pq;
+        priority_queue< pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> pq;   //This makes it min heap
 
         dist[src] = 0;
         pq.push({0,src});
