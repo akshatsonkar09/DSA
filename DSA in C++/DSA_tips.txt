@@ -139,6 +139,19 @@ Bit Manipulation
 
     5)  // For XOR if min is needed then undesirable can be made INT_MAX and vice versa??
 
+    6) for 1^2^3^4^........^n
+                 ans
+     N%4=1⇒      1
+     N%4=2⇒    N+1
+     N%4=3⇒     0
+     N%4=0⇒     N
+
+    7) sometimes you can solve the question by checking each bit of the number using
+
+    8) x >> i & 1;   //bring ith bit to first to perform operations and use & operator to check if it is set or not
+
+    9) ans = ans | (1 << i);     // sets the i-th bit of ans to 1
+
 
 Game Strategy
     When its your turn do your best and when its opponents turn expect the worst
@@ -168,3 +181,7 @@ Sliding window
 3963. Create Grid With Exactly One Path
         string str(n,'#');      //this is a good way to initialse a string
         vector<string> grid(n, string(m, '#'));     // this is create a ["###","###"]
+
+453. Check not just the difference/sum or something like that of min and max only but all the Permutation and how they changes
+
+462. This had the way to tell us that we need median sometimes as well
